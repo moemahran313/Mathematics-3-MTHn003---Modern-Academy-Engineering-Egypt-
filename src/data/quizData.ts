@@ -1,0 +1,502 @@
+import { Category, QuizQuestion } from '../types';
+
+export const QUIZ_QUESTIONS_DATA: QuizQuestion[] = [
+  // 1. BASIC_ODE (Classification, Order, Degree, Linearity)
+  {
+    id: 'qz_basic_1',
+    category: Category.BASIC_ODE,
+    question: 'What are the order and degree of the differential equation: $y\'\' + (y\')^3 = x$?',
+    mathFormula: 'y\'\' + (y\')^3 = x',
+    options: [
+      'Order: 2, Degree: 1',
+      'Order: 3, Degree: 2',
+      'Order: 2, Degree: 3',
+      'Order: 1, Degree: 3',
+    ],
+    correctIndex: 0,
+    explanation: 'The order is 2 because the highest derivative present is $y\'\'$. The degree is 1 because the exponent of that highest derivative ($y\'\'$) is 1 (not 3!).',
+    trick: 'The degree is ALWAYS the power of the highest derivative, never the power of lower derivatives.',
+  },
+  {
+    id: 'qz_basic_2',
+    category: Category.BASIC_ODE,
+    question: 'What is the degree of the differential equation: $\\left(\\frac{d^2y}{dx^2}\\right)^3 = \\sqrt{1 + \\left(\\frac{dy}{dx}\\right)^2}$?',
+    mathFormula: '\\left(y\'\'\\right)^3 = \\sqrt{1 + (y\')^2}',
+    options: [
+      'Degree: 3',
+      'Degree: 6',
+      'Degree: 2',
+      'Degree: 1/2',
+    ],
+    correctIndex: 1,
+    explanation: 'Square both sides to eliminate the radical around derivatives: $[(y\'\')^3]^2 = 1 + (y\')^2 \\implies (y\'\')^6 = 1 + (y\')^2$. The power of the highest derivative $y\'\'$ is 6.',
+    trick: 'Never determine the degree until all fractional exponents/roots are squared out.',
+  },
+  {
+    id: 'qz_basic_3',
+    category: Category.BASIC_ODE,
+    question: 'Which of the following differential equations is LINEAR?',
+    mathFormula: '\\text{Check linearity criteria}',
+    options: [
+      '$y\'\' + 3x y\' + x^2 y = \\sin x$',
+      '$y\'\' + y y\' = e^x$',
+      '$y\' + \\sin(y) = 0$',
+      '$(y\')^2 + 4y = 0$',
+    ],
+    correctIndex: 0,
+    explanation: 'Option A is linear because $y, y\', y\'\'$ are all to the first degree, have no cross-products, and no non-linear functions of $y$. $x^2$ and $\\sin x$ are functions of the independent variable $x$, which is completely valid.',
+    trick: 'Linearity only restricts $y$ and its derivatives! $x$-terms can be transcendental like $\\sin x$ or polynomials like $x^2$.',
+  },
+
+  // 2. SEPARATION (Separable Differential Equations)
+  {
+    id: 'qz_sep_1',
+    category: Category.SEPARATION,
+    question: 'To solve the equation $y\' = e^{3x + 2y}$, what is the first algebraic step to separate variables?',
+    mathFormula: '\\frac{dy}{dx} = e^{3x} \\cdot e^{2y}',
+    options: [
+      'Take the natural log of both sides directly',
+      'Split $e^{3x+2y}$ into $e^{3x} \\cdot e^{2y}$ and divide by $e^{2y}$',
+      'Differentiate both sides with respect to x',
+      'Substitute $z = y / x$',
+    ],
+    correctIndex: 1,
+    explanation: 'Decomposing exponents gives $e^{3x} \\cdot e^{2y}$. Dividing both sides by $e^{2y}$ gives $e^{-2y} dy = e^{3x} dx$, separating the variables completely.',
+    trick: '$e^{a+b} = e^a \\cdot e^b$ is the standard trick to untangle sums inside exponential powers.',
+  },
+  {
+    id: 'qz_sep_2',
+    category: Category.SEPARATION,
+    question: 'What is the general solution of the separable equation $x y\' = 2y$?',
+    mathFormula: 'x \\frac{dy}{dx} = 2y',
+    options: [
+      '$y = C x^2$',
+      '$y = 2x + C$',
+      '$y = C e^{2x}$',
+      '$y^2 = 2x + C$',
+    ],
+    correctIndex: 0,
+    explanation: 'Separating variables: $\\frac{dy}{y} = \\frac{2}{x} dx$. Integrating gives $\\ln|y| = 2\\ln|x| + \\ln C = \\ln(C x^2) \\implies y = C x^2$.',
+    trick: 'Remember $k \\ln x = \\ln(x^k)$ when exponentiating logarithms.',
+  },
+
+  // 3. REDUCIBLE TO SEPARABLE
+  {
+    id: 'qz_reduc_1',
+    category: Category.REDUCIBLE_SEPARATION,
+    question: 'For an ODE of the form $y\' = (2x + 3y + 1)^2$, what substitution converts it into a separable ODE?',
+    mathFormula: 'y\' = f(ax + by + c)',
+    options: [
+      '$z = y/x$',
+      '$z = 2x + 3y + 1$',
+      '$z = x^2 + y^2$',
+      '$z = y\'$',
+    ],
+    correctIndex: 1,
+    explanation: 'For any $y\' = f(ax + by + c)$, substituting $z = ax + by + c$ yields $\\frac{dz}{dx} = a + b y\' = a + b f(z)$, which is always directly separable.',
+    trick: 'Whenever $(ax + by + c)$ appears grouped together inside a power, trig function, or exponential, let $z = ax + by + c$.',
+  },
+
+  // 4. HOMOGENEOUS EQUATIONS
+  {
+    id: 'qz_homog_1',
+    category: Category.HOMOGENEOUS,
+    question: 'In a homogeneous first-order ODE $y\' = f(y/x)$, what does $\\frac{dy}{dx}$ become upon substituting $y = u \\cdot x$?',
+    mathFormula: 'y = u \\cdot x \\implies \\frac{dy}{dx} = ?',
+    options: [
+      '$\\frac{dy}{dx} = u$',
+      '$\\frac{dy}{dx} = u + x \\frac{du}{dx}$',
+      '$\\frac{dy}{dx} = x \\frac{du}{dx}$',
+      '$\\frac{dy}{dx} = u \\frac{du}{dx}$',
+    ],
+    correctIndex: 1,
+    explanation: 'By the product rule for differentiation: $\\frac{d}{dx}(u \\cdot x) = \\frac{du}{dx} \\cdot x + u \\cdot 1 = u + x \\frac{du}{dx}$.',
+    trick: 'Always replace $y\'$ with $u + x u\'$, then subtract $u$ to separate $x$ and $u$.',
+  },
+
+  // 5. EXACT EQUATIONS
+  {
+    id: 'qz_exact_1',
+    category: Category.EXACT_EQUATIONS,
+    question: 'What is the necessary and sufficient condition for $M(x, y) dx + N(x, y) dy = 0$ to be exact?',
+    mathFormula: 'M(x,y)\\,dx + N(x,y)\\,dy = 0',
+    options: [
+      '$\\frac{\\partial M}{\\partial x} = \\frac{\\partial N}{\\partial y}$',
+      '$\\frac{\\partial M}{\\partial y} = \\frac{\\partial N}{\\partial x}$',
+      '$\\frac{\\partial M}{\\partial y} + \\frac{\\partial N}{\\partial x} = 0$',
+      '$M(x,y) = N(x,y)$',
+    ],
+    correctIndex: 1,
+    explanation: 'An equation is exact if and only if $\\frac{\\partial M}{\\partial y} = \\frac{\\partial N}{\\partial x}$ (Euler-Cauchy reciprocity condition).',
+    trick: '$M$ is with $dx$, so differentiate with respect to $y$. $N$ is with $dy$, so differentiate with respect to $x$.',
+  },
+  {
+    id: 'qz_exact_2',
+    category: Category.EXACT_EQUATIONS,
+    question: 'If $\\frac{M_y - N_x}{N} = f(x)$ is a function of $x$ alone, what is the integrating factor $\\mu(x)$?',
+    mathFormula: '\\mu(x) = e^{\\int f(x) \\, dx}',
+    options: [
+      '$\\mu(x) = \\int f(x) \\, dx$',
+      '$\\mu(x) = e^{\\int f(x) \\, dx}$',
+      '$\\mu(x) = e^{-\\int f(x) \\, dx}$',
+      '$\\mu(x) = \\ln |f(x)|$',
+    ],
+    correctIndex: 1,
+    explanation: 'The integrating factor is $\\mu(x) = \\exp\\left(\\int \\frac{M_y - N_x}{N} dx\\right)$.',
+    trick: 'The denominator $N$ matches the variable $x$ of $dx$ in the integral.',
+  },
+
+  // 6. LINEAR FIRST ORDER
+  {
+    id: 'qz_linear_1',
+    category: Category.LINEAR_FIRST_ORDER,
+    question: 'What is the integrating factor $\\mu(x)$ for the differential equation $y\' + \\frac{3}{x}y = x^2$?',
+    mathFormula: 'y\' + \\frac{3}{x}y = x^2',
+    options: [
+      '$\\mu(x) = 3\\ln x$',
+      '$\\mu(x) = e^{3x}$',
+      '$\\mu(x) = x^3$',
+      '$\\mu(x) = \\frac{1}{x^3}$',
+    ],
+    correctIndex: 2,
+    explanation: '$\\mu(x) = \\exp\\left(\\int \\frac{3}{x} dx\\right) = \\exp(3 \\ln x) = \\exp(\\ln x^3) = x^3$.',
+    trick: '$e^{k \\ln x} = x^k$ always simplifies to an algebraic power of $x$.',
+  },
+  {
+    id: 'qz_linear_2',
+    category: Category.LINEAR_FIRST_ORDER,
+    question: 'Before identifying $P(x)$ in $x^2 y\' + 2xy = e^x$, what must you do first?',
+    mathFormula: 'x^2 y\' + 2xy = e^x',
+    options: [
+      'Divide through by $x^2$ so the coefficient of $y\'$ is 1',
+      'Integrate both sides immediately',
+      'Substitute $z = y^2$',
+      'Take the derivative of both sides',
+    ],
+    correctIndex: 0,
+    explanation: 'Standard form requires $y\' + P(x) y = Q(x)$ with leading coefficient 1 in front of $y\'$. Therefore, divide by $x^2$ to get $y\' + \\frac{2}{x}y = \\frac{e^x}{x^2}$.',
+    trick: 'Never read $P(x)$ until the coefficient of $y\'$ is strictly 1!',
+  },
+
+  // 7. BERNOULLI
+  {
+    id: 'qz_bern_1',
+    category: Category.BERNOULLI,
+    question: 'In the Bernoulli equation $y\' + P(x) y = Q(x) y^n$, what substitution transforms it into a linear equation?',
+    mathFormula: 'y\' + P(x)y = Q(x)y^n',
+    options: [
+      '$z = y^n$',
+      '$z = y^{1-n}$',
+      '$z = y^{n-1}$',
+      '$z = y^{-n}$',
+    ],
+    correctIndex: 1,
+    explanation: 'The standard Bernoulli transformation is $z = y^{1-n}$, which produces the linear ODE $z\' + (1-n) P(x) z = (1-n) Q(x)$.',
+    trick: 'The power of the substitution is always $1 - n$. For $y^5$, $n=5 \\implies z = y^{-4}$.',
+  },
+
+  // 8. HIGHER-ORDER HOMOGENEOUS
+  {
+    id: 'qz_higher_homog_1',
+    category: Category.HIGHER_ORDER_HOMOGENEOUS,
+    question: 'If the auxiliary equation has complex roots $m = 1 \\pm 3i$, what is the complementary solution $y_h$?',
+    mathFormula: 'm = 1 \\pm 3i',
+    options: [
+      '$y_h = C_1 e^x + C_2 e^{3x}$',
+      '$y_h = e^x [C_1 \\cos(3x) + C_2 \\sin(3x)]$',
+      '$y_h = e^{3x} [C_1 \\cos x + C_2 \\sin x]$',
+      '$y_h = C_1 \\cos(3x) + C_2 \\sin(3x)$',
+    ],
+    correctIndex: 1,
+    explanation: 'For roots $\\alpha \\pm i\\beta$, the general solution is $y_h = e^{\\alpha x}[C_1 \\cos(\\beta x) + C_2 \\sin(\\beta x)]$. Here $\\alpha = 1, \\beta = 3$.',
+    trick: 'Real part $\\alpha$ goes in the exponential exponent; imaginary part $\\beta$ goes inside the sinusoidal angles.',
+  },
+  {
+    id: 'qz_higher_homog_2',
+    category: Category.HIGHER_ORDER_HOMOGENEOUS,
+    question: 'If the auxiliary equation has repeated roots $m = 4, 4, 4$, what is the general solution?',
+    mathFormula: '(m - 4)^3 = 0',
+    options: [
+      '$y = C_1 e^{4x}$',
+      '$y = (C_1 + C_2 x + C_3 x^2) e^{4x}$',
+      '$y = C_1 e^{4x} + C_2 e^{4x} + C_3 e^{4x}$',
+      '$y = C_1 e^{4x} + C_2 x e^{4x} + C_3 x e^{4x}$',
+    ],
+    correctIndex: 1,
+    explanation: 'Each repetition of a real root introduces an additional factor of $x$: $y_h = (C_1 + C_2 x + C_3 x^2) e^{4x}$.',
+    trick: 'Degree of multiplicity $k$ requires terms multiplying up to $x^{k-1}$.',
+  },
+
+  // 9. UNDETERMINED COEFFICIENTS
+  {
+    id: 'qz_undet_1',
+    category: Category.UNDETERMINED_COEFFS,
+    question: 'For $y\'\' - 9y = e^{3x}$, what is the correct trial form for the particular solution $y_p$?',
+    mathFormula: 'y\'\' - 9y = e^{3x}',
+    options: [
+      '$y_p = A e^{3x}$',
+      '$y_p = A x e^{3x}$',
+      '$y_p = A x^2 e^{3x}$',
+      '$y_p = A e^{3x} + B e^{-3x}$',
+    ],
+    correctIndex: 1,
+    explanation: 'The auxiliary equation $m^2 - 9 = 0$ gives $m = \\pm 3$, so $y_h = C_1 e^{3x} + C_2 e^{-3x}$. Since $e^{3x}$ already appears in $y_h$ with multiplicity 1, we must multiply the standard guess $A e^{3x}$ by $x$, giving $y_p = A x e^{3x}$.',
+    trick: 'Modification rule: If the RHS matches any term in $y_h$, multiply by $x$ until there is no duplication.',
+  },
+
+  // 10. VARIATION OF PARAMETERS
+  {
+    id: 'qz_var_param_1',
+    category: Category.VARIATION_OF_PARAMETERS,
+    question: 'What is the Wronskian $W(\\cos x, \\sin x)$ for $y\'\' + y = 0$?',
+    mathFormula: 'W(\\cos x, \\sin x) = \\begin{vmatrix} \\cos x & \\sin x \\\\ -\\sin x & \\cos x \\end{vmatrix}',
+    options: [
+      '$0$',
+      '$\\cos(2x)$',
+      '$1$',
+      '$-1$',
+    ],
+    correctIndex: 2,
+    explanation: '$W = (\\cos x)(\\cos x) - (\\sin x)(-\\sin x) = \\cos^2 x + \\sin^2 x = 1$.',
+    trick: 'The Wronskian of $\\cos x$ and $\\sin x$ is a classic identity that always evaluates to 1.',
+  },
+  {
+    id: 'qz_var_param_2',
+    category: Category.VARIATION_OF_PARAMETERS,
+    question: 'Why is Variation of Parameters preferred over Undetermined Coefficients for $y\'\' + y = \\sec x$?',
+    mathFormula: 'y\'\' + y = \\sec x',
+    options: [
+      'Variation of Parameters is faster to calculate',
+      'Undetermined Coefficients only works when $f(x)$ has a finite family of derivatives (polynomials, exponentials, sines, cosines)',
+      'Undetermined Coefficients cannot solve second-order equations',
+      'Variation of Parameters does not require finding $y_h$',
+    ],
+    correctIndex: 1,
+    explanation: 'The derivatives of $\\sec x$ produce infinitely many new functional forms ($\\sec x \\tan x$, $\\sec^3 x + \\sec x \\tan^2 x, \\dots$), so Undetermined Coefficients fails. Variation of Parameters handles any integrable function.',
+    trick: 'For $\\tan x, \\cot x, \\sec x, \\csc x, \\ln x, 1/x$, always use Variation of Parameters.',
+  },
+
+  // 11. REDUCTION OF ORDER
+  {
+    id: 'qz_red_order_1',
+    category: Category.REDUCTION_OF_ORDER,
+    question: 'Given one solution $y_1(x)$, what ansatz is used in the Reduction of Order method to find $y_2(x)$?',
+    mathFormula: 'y_2(x) = v(x) \\cdot y_1(x)',
+    options: [
+      '$y_2(x) = v(x) + y_1(x)$',
+      '$y_2(x) = v(x) \\cdot y_1(x)$',
+      '$y_2(x) = [y_1(x)]^2$',
+      '$y_2(x) = \\frac{1}{y_1(x)}$',
+    ],
+    correctIndex: 1,
+    explanation: 'Reduction of order sets $y_2(x) = v(x) y_1(x)$. Substituting this into the ODE yields an equation without a $v$ term, allowing substitution $w = v\'$ to reduce the order to 1.',
+    trick: 'Formula: $y_2 = y_1 \\int \\frac{e^{-\\int P dx}}{y_1^2} dx$.',
+  },
+
+  // 12. LAPLACE TRANSFORMS
+  {
+    id: 'qz_laplace_1',
+    category: Category.LAPLACE_TRANSFORMS,
+    question: 'What is the Laplace transform of $f(t) = \\sin(4t)$?',
+    mathFormula: '\\mathcal{L}\\{\\sin(4t)\\}',
+    options: [
+      '$\\frac{s}{s^2 + 16}$',
+      '$\\frac{4}{s^2 + 16}$',
+      '$\\frac{4}{s^2 - 16}$',
+      '$\\frac{16}{s^2 + 4}$',
+    ],
+    correctIndex: 1,
+    explanation: '$\\mathcal{L}\\{\\sin(at)\\} = \\frac{a}{s^2 + a^2}$. For $a = 4$, this gives $\\frac{4}{s^2 + 16}$. Sine has constant in numerator; cosine has $s$ in numerator.',
+    trick: 'Cos has $S$ in numerator; Sine has Constant $a$.',
+  },
+  {
+    id: 'qz_laplace_2',
+    category: Category.LAPLACE_TRANSFORMS,
+    question: 'What is the Laplace transform of $f(t) = t^3$?',
+    mathFormula: '\\mathcal{L}\\{t^3\\}',
+    options: [
+      '$\\frac{3}{s^4}$',
+      '$\\frac{6}{s^4}$',
+      '$\\frac{6}{s^3}$',
+      '$\\frac{1}{s^4}$',
+    ],
+    correctIndex: 1,
+    explanation: '$\\mathcal{L}\\{t^n\\} = \\frac{n!}{s^{n+1}}$. For $n = 3$, $3! = 6$, giving $\\frac{6}{s^4}$.',
+    trick: 'The power of $s$ in the denominator is always $n+1$, one greater than the power of $t$.',
+  },
+
+  // 13. LAPLACE THEOREMS (Shift, Heaviside, tn)
+  {
+    id: 'qz_lap_thm_1',
+    category: Category.LAPLACE_THEOREMS,
+    question: 'By the First Shift Theorem, what is $\\mathcal{L}\\{e^{-3t} \\cos(2t)\\}$?',
+    mathFormula: '\\mathcal{L}\\{e^{-3t}\\cos(2t)\\}',
+    options: [
+      '$\\frac{s-3}{(s-3)^2 + 4}$',
+      '$\\frac{s+3}{(s+3)^2 + 4}$',
+      '$\\frac{2}{(s+3)^2 + 4}$',
+      '$\\frac{s+3}{(s+3)^2 - 4}$',
+    ],
+    correctIndex: 1,
+    explanation: '$\\mathcal{L}\\{\\cos(2t)\\} = \\frac{s}{s^2 + 4}$. Multiplying by $e^{-3t}$ shifts $s \\to s - (-3) = s + 3$, yielding $\\frac{s+3}{(s+3)^2 + 4}$.',
+    trick: '$e^{at}$ shifts $s$ to $s - a$. Since $a = -3$, $s - (-3) = s + 3$.',
+  },
+  {
+    id: 'qz_lap_thm_2',
+    category: Category.LAPLACE_THEOREMS,
+    question: 'What is the Laplace transform of the delayed step function $f(t) = u(t - 5)$?',
+    mathFormula: '\\mathcal{L}\\{u(t - 5)\\}',
+    options: [
+      '$\\frac{e^{-5s}}{s}$',
+      '$\\frac{e^{5s}}{s}$',
+      '$\\frac{5}{s}$',
+      '$\\frac{1}{s - 5}$',
+    ],
+    correctIndex: 0,
+    explanation: 'By the Second Shift Theorem, $\\mathcal{L}\\{u(t-a)\\} = \\frac{e^{-as}}{s}$. Here $a = 5$, so the transform is $\\frac{e^{-5s}}{s}$.',
+    trick: 'The delay $t - a$ always corresponds to multiplying by exponential $e^{-as}$ in the $s$-domain.',
+  },
+  {
+    id: 'qz_lap_thm_3',
+    category: Category.LAPLACE_THEOREMS,
+    question: 'What operation does multiplication by $t$ in $\\mathcal{L}\\{t f(t)\\}$ correspond to in the $s$-domain?',
+    mathFormula: '\\mathcal{L}\\{t f(t)\\} = ?',
+    options: [
+      '$\\int_s^\\infty F(\\sigma) \\, d\\sigma$',
+      '$-\\frac{d}{ds}[F(s)]$',
+      '$s F(s) - f(0)$',
+      '$\\frac{1}{s} F(s)$',
+    ],
+    correctIndex: 1,
+    explanation: 'Multiplication by $t$ corresponds to frequency differentiation: $\\mathcal{L}\\{t f(t)\\} = -\\frac{d}{ds}F(s)$.',
+    trick: 'Multiplication by $t$ = negative derivative with respect to $s$. Division by $t$ = integral with respect to $s$.',
+  },
+
+  // 14. INVERSE LAPLACE
+  {
+    id: 'qz_inv_lap_1',
+    category: Category.INVERSE_LAPLACE,
+    question: 'What is the inverse Laplace transform of $F(s) = \\ln\\left(\\frac{s+3}{s+1}\\right)$ using the logarithmic derivative trick?',
+    mathFormula: 'F(s) = \\ln(s+3) - \\ln(s+1)',
+    options: [
+      '$\\frac{e^{-t} - e^{-3t}}{t}$',
+      '$\\frac{e^{-3t} - e^{-t}}{t}$',
+      '$e^{-3t} - e^{-t}$',
+      '$-t (e^{-3t} - e^{-t})$',
+    ],
+    correctIndex: 0,
+    explanation: '$F\'(s) = \\frac{1}{s+3} - \\frac{1}{s+1}$. The inverse of $F\'(s)$ is $e^{-3t} - e^{-t}$. By the frequency differentiation rule, $\\mathcal{L}\\{-t f(t)\\} = F\'(s)$, so $-t f(t) = e^{-3t} - e^{-t} \\implies f(t) = \\frac{e^{-t} - e^{-3t}}{t}$.',
+    trick: 'Dividing by $-t$ flips the subtraction order to $(e^{-t} - e^{-3t})/t$.',
+  },
+  {
+    id: 'qz_inv_lap_2',
+    category: Category.INVERSE_LAPLACE,
+    question: 'To find $\\mathcal{L}^{-1}\\left\\{\\frac{s}{s^2 + 6s + 25}\\right\\}$, what is the completed square form of the denominator?',
+    mathFormula: 's^2 + 6s + 25',
+    options: [
+      '$(s + 3)^2 + 16$',
+      '$(s + 6)^2 - 11$',
+      '$(s + 3)^2 + 25$',
+      '$(s + 5)^2$',
+    ],
+    correctIndex: 0,
+    explanation: 'Half the coefficient of $s$ is $3$, and $3^2 = 9$. Thus, $s^2 + 6s + 25 = (s+3)^2 + 25 - 9 = (s+3)^2 + 16 = (s+3)^2 + 4^2$.',
+    trick: 'Notice $16 = 4^2$, which corresponds to frequencies $\\cos(4t)$ and $\\sin(4t)$ shifted by $e^{-3t}$.',
+  },
+
+  // 15. LAPLACE FOR ODEs
+  {
+    id: 'qz_lap_ode_1',
+    category: Category.LAPLACE_ODE,
+    question: 'What is the Laplace transform of the second derivative $\\mathcal{L}\\{y\'\'(t)\\}$?',
+    mathFormula: '\\mathcal{L}\\{y\'\'(t)\\}',
+    options: [
+      '$s^2 Y(s)$',
+      '$s^2 Y(s) - s y(0) - y\'(0)$',
+      '$s^2 Y(s) - y(0) - s y\'(0)$',
+      '$s^2 Y(s) + s y(0) + y\'(0)$',
+    ],
+    correctIndex: 1,
+    explanation: 'By the derivative theorem for Laplace transforms: $\\mathcal{L}\\{y\'\'(t)\\} = s^2 Y(s) - s y(0) - y\'(0)$.',
+    trick: 'Powers of $s$ decrease: $s^2 Y(s)$, then $s^1 y(0)$, then $s^0 y\'(0)$ with negative signs.',
+  },
+
+  // 16. FOURIER SERIES
+  {
+    id: 'qz_fourier_1',
+    category: Category.FOURIER_SERIES,
+    question: 'When asked to represent $f(x) = x^2$ on $(0, L)$ as a Fourier SINE series, which coefficients are identically zero?',
+    mathFormula: 'f(x) = \\sum_{n=1}^\\infty b_n \\sin\\left(\\frac{n\\pi x}{L}\\right)',
+    options: [
+      '$b_n = 0$',
+      '$a_0 = 0$ and $a_n = 0$',
+      'Only $a_0 = 0$',
+      'None of them',
+    ],
+    correctIndex: 1,
+    explanation: 'A Fourier Sine Series corresponds to an odd periodic extension, which has only sine terms. Therefore, $a_0 = 0$ and $a_n = 0$ for all $n$.',
+    trick: 'Sine Series = ODD extension $\\implies$ all cosine coefficients ($a_0, a_n$) vanish immediately.',
+  },
+  {
+    id: 'qz_fourier_2',
+    category: Category.FOURIER_SERIES,
+    question: 'If $f(x)$ is an EVEN function on $[-L, L]$, what is the value of the Fourier coefficient $b_n$?',
+    mathFormula: 'b_n = \\frac{1}{L} \\int_{-L}^L f(x) \\sin\\left(\\frac{n\\pi x}{L}\\right) \\, dx',
+    options: [
+      '$b_n = \\frac{2}{L} \\int_0^L f(x) \\sin\\left(\\frac{n\\pi x}{L}\\right) dx$',
+      '$b_n = 0$',
+      '$b_n = 1$',
+      '$b_n = \\frac{a_n}{2}$',
+    ],
+    correctIndex: 1,
+    explanation: 'Since $f(x)$ is even and $\\sin(n\\pi x/L)$ is odd, their product is an odd function. The integral of an odd function over a symmetric interval $[-L, L]$ is identically 0. Hence $b_n = 0$.',
+    trick: 'Even function $\\implies$ Cosine series only ($b_n = 0$). Odd function $\\implies$ Sine series only ($a_0 = a_n = 0$).',
+  },
+
+  // 17. LEGENDRE POLYNOMIALS
+  {
+    id: 'qz_legendre_1',
+    category: Category.LEGENDRE_POLYNOMIALS,
+    question: 'What is the value of the orthogonality integral $\\int_{-1}^1 P_2(x) P_3(x) \\, dx$?',
+    mathFormula: '\\int_{-1}^1 P_2(x) P_3(x) \\, dx',
+    options: [
+      '$2 / 5$',
+      '$2 / 7$',
+      '$0$',
+      '$1$',
+    ],
+    correctIndex: 2,
+    explanation: 'By the orthogonality property of Legendre polynomials, $\\int_{-1}^1 P_n(x) P_m(x) dx = 0$ whenever $n \\neq m$. Here $n = 2$ and $m = 3$, so the integral is identically 0.',
+    trick: 'Different subscripts in Legendre integral on $[-1, 1]$ $\\implies$ 0 immediately!',
+  },
+  {
+    id: 'qz_legendre_2',
+    category: Category.LEGENDRE_POLYNOMIALS,
+    question: 'What is the value of $\\int_{-1}^1 [P_3(x)]^2 \\, dx$?',
+    mathFormula: '\\int_{-1}^1 [P_n(x)]^2 \\, dx = \\frac{2}{2n + 1}',
+    options: [
+      '$0$',
+      '$\\frac{2}{7}$',
+      '$\\frac{2}{5}$',
+      '$\\frac{1}{7}$',
+    ],
+    correctIndex: 1,
+    explanation: 'When $n = m$, the normalization integral is $\\frac{2}{2n+1}$. For $n = 3$, this is $\\frac{2}{2(3) + 1} = \\frac{2}{7}$.',
+    trick: 'Formula: $\\frac{2}{2n+1}$. Plug in $n=3 \\implies 2/7$.',
+  },
+  {
+    id: 'qz_legendre_3',
+    category: Category.LEGENDRE_POLYNOMIALS,
+    question: 'According to Bonnet\'s recurrence relation, $(n+1) P_{n+1}(x) = (2n+1) x P_n(x) - n P_{n-1}(x)$, what is $P_2(x)$ if $P_0(x) = 1$ and $P_1(x) = x$?',
+    mathFormula: '2 P_2(x) = 3x P_1(x) - P_0(x)',
+    options: [
+      '$P_2(x) = 3x^2 - 1$',
+      '$P_2(x) = \\frac{1}{2}(3x^2 - 1)$',
+      '$P_2(x) = \\frac{1}{2}(5x^3 - 3x)$',
+      '$P_2(x) = x^2 - 1$',
+    ],
+    correctIndex: 1,
+    explanation: 'Setting $n = 1$: $2 P_2(x) = 3x(x) - 1(1) = 3x^2 - 1 \\implies P_2(x) = \\frac{1}{2}(3x^2 - 1)$.',
+    trick: 'Legendre polynomials always have $P_n(1) = 1$. Notice $\\frac{1}{2}(3(1)^2 - 1) = \\frac{2}{2} = 1$.',
+  },
+];
