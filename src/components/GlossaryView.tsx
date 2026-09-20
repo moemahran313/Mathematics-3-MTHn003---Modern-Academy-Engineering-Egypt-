@@ -1,15 +1,18 @@
 import React, { useState, useMemo } from 'react';
-import { BookOpen, Search, Sparkles, Filter, ChevronDown, ChevronUp, Copy, Check, Lightbulb, ArrowRight, Bookmark } from 'lucide-react';
+import { BookOpen, Search, Sparkles, Filter, ChevronDown, ChevronUp, Copy, Check, Lightbulb, ArrowRight, Bookmark, Layers, RotateCw } from 'lucide-react';
 import { GLOSSARY_DATA } from '../data/glossaryData';
 import { GlossaryTerm, Category } from '../types';
 import { MathView, FormattedText } from './MathView';
+import { GlossaryFlashcards } from './GlossaryFlashcards';
 
 interface GlossaryViewProps {
   initialTermId?: string;
   onNavigateToTopic?: (category: Category) => void;
+  initialMode?: 'list' | 'flashcards';
 }
 
-export const GlossaryView: React.FC<GlossaryViewProps> = ({ initialTermId, onNavigateToTopic }) => {
+export const GlossaryView: React.FC<GlossaryViewProps> = ({ initialTermId, onNavigateToTopic, initialMode = 'list' }) => {
+  const [viewMode, setViewMode] = useState<'list' | 'flashcards'>(initialMode);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChapter, setSelectedChapter] = useState<string>('all');
   const [expandedExamples, setExpandedExamples] = useState<Record<string, boolean>>({});
@@ -88,7 +91,7 @@ export const GlossaryView: React.FC<GlossaryViewProps> = ({ initialTermId, onNav
     <div className="space-y-8 animate-fadeIn">
       {/* Header Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-linear-to-br from-slate-900 via-slate-900/90 to-teal-950/30 p-6 sm:p-8 shadow-xl">
-        <div className="relative z-10 max-w-3xl space-y-3">
+        <div className="relative z-10 max-w-3xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-mono font-bold">
               <Bookmark className="w-3.5 h-3.5" />
@@ -96,6 +99,9 @@ export const GlossaryView: React.FC<GlossaryViewProps> = ({ initialTermId, onNav
             </span>
             <span className="px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-slate-400 text-xs font-mono">
               {GLOSSARY_DATA.length} Standard Terms
+            </span>
+            <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-mono">
+              Interactive 3D Flashcards
             </span>
           </div>
 
@@ -109,92 +115,128 @@ export const GlossaryView: React.FC<GlossaryViewProps> = ({ initialTermId, onNav
           </div>
 
           <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-sans max-w-2xl">
-            Every core mathematical term across differential equations, Laplace operational methods, Fourier harmonic expansions, and Legendre special functions. Each entry provides precise formal definitions, mathematical statements in KaTeX, step-by-step illustrative examples, and common student examination traps.
+            Every core mathematical term across differential equations, Laplace operational methods, Fourier harmonic expansions, and Legendre special functions. Study with the comprehensive A-Z lexicon or test your retention with animated flip-card flashcards.
           </p>
-        </div>
-      </div>
 
-      {/* Search & Filtering Controls */}
-      <div className="space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              if (e.target.value) setActiveLetter(null);
-            }}
-            placeholder="Search glossary by term, definition, or concept (e.g., 'Wronskian', 'Bernoulli', 'Shift', 'Legendre')..."
-            className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-slate-900 border border-slate-800 focus:border-teal-500/50 focus:ring-2 focus:ring-teal-500/20 text-sm text-slate-200 placeholder-slate-500 outline-hidden transition-all shadow-inner"
-          />
-          {searchQuery && (
+          {/* Mode Switcher Buttons */}
+          <div className="flex flex-wrap items-center gap-2 pt-2">
             <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-200 bg-slate-800 px-2 py-1 rounded-lg border border-slate-700 cursor-pointer"
+              onClick={() => setViewMode('list')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm ${
+                viewMode === 'list'
+                  ? 'bg-teal-500 text-slate-950 shadow-teal-500/20 font-extrabold'
+                  : 'bg-slate-800/90 text-slate-300 hover:bg-slate-750 border border-slate-700'
+              }`}
             >
-              Clear
+              <BookOpen className="w-4 h-4" />
+              <span>Lexicon A-Z List</span>
             </button>
-          )}
-        </div>
 
-        {/* Chapter Category Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-          {chapters.map((ch) => {
-            const isActive = selectedChapter === ch.id;
-            return (
-              <button
-                key={ch.id}
-                onClick={() => setSelectedChapter(ch.id)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
-                  isActive
-                    ? 'bg-teal-500/15 border-teal-500/30 text-teal-300 font-bold shadow-xs'
-                    : 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
-                }`}
-              >
-                {ch.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Alphabet Quick-Jump Bar */}
-        <div className="flex items-center gap-1.5 flex-wrap pt-1">
-          <span className="text-[11px] font-mono text-slate-500 mr-1 flex items-center gap-1">
-            <Filter className="w-3 h-3" /> A-Z Jump:
-          </span>
-          <button
-            onClick={() => setActiveLetter(null)}
-            className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold transition-colors cursor-pointer ${
-              activeLetter === null
-                ? 'bg-teal-400 text-slate-950'
-                : 'bg-slate-800/70 text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            All
-          </button>
-          {alphabet.map((letter) => {
-            const isSelected = activeLetter === letter;
-            return (
-              <button
-                key={letter}
-                onClick={() => {
-                  setActiveLetter(isSelected ? null : letter);
-                  setSearchQuery('');
-                }}
-                className={`w-6 h-6 rounded-md text-[10px] font-mono font-bold transition-all flex items-center justify-center cursor-pointer ${
-                  isSelected
-                    ? 'bg-teal-400 text-slate-950 font-black shadow-xs'
-                    : 'bg-slate-800/60 text-slate-400 hover:text-slate-100 hover:bg-slate-700'
-                }`}
-              >
-                {letter}
-              </button>
-            );
-          })}
+            <button
+              onClick={() => setViewMode('flashcards')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm ${
+                viewMode === 'flashcards'
+                  ? 'bg-indigo-500 text-white shadow-indigo-500/25 font-extrabold'
+                  : 'bg-slate-800/90 text-indigo-300 hover:bg-slate-750 border border-indigo-500/30'
+              }`}
+            >
+              <RotateCw className="w-4 h-4" />
+              <span>Interactive Flashcards (Flip & Test)</span>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Render Flashcards Mode */}
+      {viewMode === 'flashcards' ? (
+        <GlossaryFlashcards
+          onNavigateToTopic={onNavigateToTopic}
+          onSwitchToListView={() => setViewMode('list')}
+        />
+      ) : (
+        /* Render Standard Lexicon List Mode */
+        <div className="space-y-6">
+          {/* Search & Filtering Controls */}
+          <div className="space-y-4">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value) setActiveLetter(null);
+                }}
+                placeholder="Search glossary by term, definition, or concept (e.g., 'Wronskian', 'Bernoulli', 'Shift', 'Legendre')..."
+                className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-slate-900 border border-slate-800 focus:border-teal-500/50 focus:ring-2 focus:ring-teal-500/20 text-sm text-slate-200 placeholder-slate-500 outline-hidden transition-all shadow-inner"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-200 bg-slate-800 px-2 py-1 rounded-lg border border-slate-700 cursor-pointer"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {/* Chapter Category Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+              {chapters.map((ch) => {
+                const isActive = selectedChapter === ch.id;
+                return (
+                  <button
+                    key={ch.id}
+                    onClick={() => setSelectedChapter(ch.id)}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                      isActive
+                        ? 'bg-teal-500/15 border-teal-500/30 text-teal-300 font-bold shadow-xs'
+                        : 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
+                    }`}
+                  >
+                    {ch.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Alphabet Quick-Jump Bar */}
+            <div className="flex items-center gap-1.5 flex-wrap pt-1">
+              <span className="text-[11px] font-mono text-slate-500 mr-1 flex items-center gap-1">
+                <Filter className="w-3 h-3" /> A-Z Jump:
+              </span>
+              <button
+                onClick={() => setActiveLetter(null)}
+                className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold transition-colors cursor-pointer ${
+                  activeLetter === null
+                    ? 'bg-teal-400 text-slate-950'
+                    : 'bg-slate-800/70 text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                All
+              </button>
+              {alphabet.map((letter) => {
+                const isSelected = activeLetter === letter;
+                return (
+                  <button
+                    key={letter}
+                    onClick={() => {
+                      setActiveLetter(isSelected ? null : letter);
+                      setSearchQuery('');
+                    }}
+                    className={`w-6 h-6 rounded-md text-[10px] font-mono font-bold transition-all flex items-center justify-center cursor-pointer ${
+                      isSelected
+                        ? 'bg-teal-400 text-slate-950 font-black shadow-xs'
+                        : 'bg-slate-800/60 text-slate-400 hover:text-slate-100 hover:bg-slate-700'
+                    }`}
+                  >
+                    {letter}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
       {/* Results Count & Current Filter Info */}
       <div className="flex items-center justify-between text-xs text-slate-400 font-mono px-1">
@@ -390,6 +432,8 @@ export const GlossaryView: React.FC<GlossaryViewProps> = ({ initialTermId, onNav
               </article>
             );
           })}
+        </div>
+      )}
         </div>
       )}
     </div>

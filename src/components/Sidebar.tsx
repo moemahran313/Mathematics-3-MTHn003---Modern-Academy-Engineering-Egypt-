@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Video, Trophy, Zap, Compass, Calculator, ExternalLink, X, Bookmark, Search, Smartphone } from 'lucide-react';
+import { BookOpen, Video, Trophy, Zap, Compass, Calculator, ExternalLink, X, Bookmark, Search, Smartphone, FileCode2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PWAInstallButton } from './PWAInstallButton';
 
@@ -27,11 +27,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: 'Ch. 1 - 5',
     },
     {
+      id: 'formulas',
+      label: 'Formula Sheet',
+      icon: FileCode2,
+      iconColor: 'text-teal-400',
+      badge: 'LaTeX Copy',
+    },
+    {
       id: 'glossary',
-      label: 'Mathematical Glossary',
+      label: 'Glossary & Flashcards',
       icon: Bookmark,
       iconColor: 'text-indigo-400',
-      badge: '40+ Terms',
+      badge: '3D Cards',
     },
     {
       id: 'quiz',

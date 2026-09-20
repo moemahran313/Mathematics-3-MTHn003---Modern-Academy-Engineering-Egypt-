@@ -11,6 +11,7 @@ import {
   Sparkles,
   Bookmark,
   Search,
+  FileCode2,
 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { LibraryView } from './components/LibraryView';
@@ -19,6 +20,7 @@ import { ExamsView } from './components/ExamsView';
 import { QuizArenaView } from './components/QuizArenaView';
 import { SolverView } from './components/SolverView';
 import { GlossaryView } from './components/GlossaryView';
+import { FormulaSheetView } from './components/FormulaSheetView';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { OfflineStatusBar } from './components/OfflineStatusBar';
@@ -175,6 +177,19 @@ export default function App() {
             />
           )}
 
+          {activeTab === 'formulas' && (
+            <FormulaSheetView
+              onNavigateToCategory={(cat) => {
+                setSelectedTopicCategory(cat);
+                setActiveTab('library');
+              }}
+              onNavigateToQuiz={(cat) => {
+                setSelectedTopicCategory(cat);
+                setActiveTab('quiz');
+              }}
+            />
+          )}
+
           {activeTab === 'glossary' && (
             <GlossaryView
               onNavigateToTopic={(cat) => {
@@ -209,20 +224,29 @@ export default function App() {
         </footer>
 
         {/* Mobile Bottom Navigation Bar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 px-2 py-1.5 flex items-center justify-around">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 px-1 py-1 flex items-center justify-around overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveTab('library')}
-            className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-[10px] font-bold ${
-              activeTab === 'library' ? 'text-teal-400' : 'text-slate-400'
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'library' ? 'text-teal-400 font-extrabold' : 'text-slate-400'
             }`}
           >
             <BookOpen className="w-4 h-4" />
             <span>Chapters</span>
           </button>
           <button
+            onClick={() => setActiveTab('formulas')}
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'formulas' ? 'text-teal-300 font-extrabold' : 'text-slate-400'
+            }`}
+          >
+            <FileCode2 className="w-4 h-4" />
+            <span>Formulas</span>
+          </button>
+          <button
             onClick={() => setActiveTab('glossary')}
-            className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-[10px] font-bold ${
-              activeTab === 'glossary' ? 'text-indigo-400' : 'text-slate-400'
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'glossary' ? 'text-indigo-400 font-extrabold' : 'text-slate-400'
             }`}
           >
             <Bookmark className="w-4 h-4" />
@@ -230,8 +254,8 @@ export default function App() {
           </button>
           <button
             onClick={() => setActiveTab('quiz')}
-            className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-[10px] font-bold ${
-              activeTab === 'quiz' ? 'text-emerald-400' : 'text-slate-400'
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'quiz' ? 'text-emerald-400 font-extrabold' : 'text-slate-400'
             }`}
           >
             <Zap className="w-4 h-4" />
@@ -239,8 +263,8 @@ export default function App() {
           </button>
           <button
             onClick={() => setActiveTab('exams')}
-            className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-[10px] font-bold ${
-              activeTab === 'exams' ? 'text-amber-400' : 'text-slate-400'
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'exams' ? 'text-amber-400 font-extrabold' : 'text-slate-400'
             }`}
           >
             <Trophy className="w-4 h-4" />
@@ -248,8 +272,8 @@ export default function App() {
           </button>
           <button
             onClick={() => setActiveTab('videos')}
-            className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-[10px] font-bold ${
-              activeTab === 'videos' ? 'text-red-400' : 'text-slate-400'
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'videos' ? 'text-red-400 font-extrabold' : 'text-slate-400'
             }`}
           >
             <Video className="w-4 h-4" />
