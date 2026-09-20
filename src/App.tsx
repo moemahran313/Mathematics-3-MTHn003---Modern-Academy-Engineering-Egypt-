@@ -20,6 +20,8 @@ import { QuizArenaView } from './components/QuizArenaView';
 import { SolverView } from './components/SolverView';
 import { GlossaryView } from './components/GlossaryView';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { PWAInstallButton } from './components/PWAInstallButton';
+import { OfflineStatusBar } from './components/OfflineStatusBar';
 import { Category } from './types';
 
 export default function App() {
@@ -74,6 +76,9 @@ export default function App() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 pb-16 md:pb-8">
+        {/* Offline Status & Connectivity Banner */}
+        <OfflineStatusBar />
+
         {/* Mobile Header */}
         <header className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3.5 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
           <div className="flex items-center gap-2.5">
@@ -89,12 +94,13 @@ export default function App() {
                 <Compass className="w-4 h-4" />
               </div>
               <span className="text-xs font-mono font-extrabold text-slate-100 tracking-tight">
-                Math 3 Reference
+                Math 3
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            <PWAInstallButton variant="header" />
             <button
               onClick={() => setIsSearchOpen(true)}
               className="p-2 rounded-xl bg-slate-850 border border-slate-750 text-slate-300 hover:text-teal-400 flex items-center gap-1 text-xs font-mono cursor-pointer"
@@ -106,7 +112,7 @@ export default function App() {
               href="https://discord.gg/p6hkRbzFTn"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 px-2.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[11px] font-bold flex items-center gap-1.5"
+              className="p-1.5 px-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[11px] font-bold flex items-center gap-1"
             >
               <span>Discord</span>
               <ExternalLink className="w-3 h-3 opacity-70" />
@@ -138,8 +144,9 @@ export default function App() {
             </button>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-slate-400 font-mono text-[11px]">
+          <div className="flex items-center gap-3">
+            <PWAInstallButton variant="header" />
+            <span className="text-slate-400 font-mono text-[11px] hidden lg:inline">
               Active Term: <strong className="text-teal-400 font-normal">Fall 2024 / Spring 2026</strong>
             </span>
             <a
@@ -148,11 +155,14 @@ export default function App() {
               rel="noopener noreferrer"
               className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 hover:text-indigo-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
             >
-              <span>Join Math 3 Discord</span>
+              <span>Discord</span>
               <ExternalLink className="w-3 h-3 opacity-60" />
             </a>
           </div>
         </div>
+
+        {/* Floating Mobile PWA Install Button */}
+        <PWAInstallButton variant="floating" />
 
         {/* Content Container */}
         <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto">

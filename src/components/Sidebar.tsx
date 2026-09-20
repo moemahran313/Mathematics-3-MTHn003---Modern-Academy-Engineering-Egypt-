@@ -1,6 +1,7 @@
 import React from 'react';
-import { BookOpen, Video, Trophy, Zap, Compass, Calculator, ExternalLink, X, Bookmark, Search } from 'lucide-react';
+import { BookOpen, Video, Trophy, Zap, Compass, Calculator, ExternalLink, X, Bookmark, Search, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface SidebarProps {
   activeTab: string;
@@ -149,12 +150,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   );
                 })}
 
-                <div className="pt-3">
+                <div className="pt-3 space-y-2">
+                  <div className="w-full">
+                    <PWAInstallButton variant="hero" className="w-full justify-center" />
+                  </div>
                   <a
                     href="https://discord.gg/p6hkRbzFTn"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-between px-3.5 py-3 text-xs font-bold rounded-xl transition-all text-left text-indigo-400 hover:text-indigo-300 hover:bg-slate-800/30 border border-indigo-500/20"
+                    className="w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold rounded-xl transition-all text-left text-indigo-400 hover:text-indigo-300 hover:bg-slate-800/30 border border-indigo-500/20"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="text-sm">💬</span>
@@ -236,7 +240,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
 
-          <div className="pt-4 mt-2">
+          <div className="pt-4 mt-2 space-y-2">
+            <div className="w-full">
+              <PWAInstallButton variant="hero" className="w-full justify-center" />
+            </div>
             <a
               href="https://discord.gg/p6hkRbzFTn"
               target="_blank"

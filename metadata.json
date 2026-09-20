@@ -2,5 +2,7 @@
   "name": "Math 3 Reference Library",
   "description": "Comprehensive reference library for Mathematics 3 (MTH203/MTHn103): Differential Equations, Laplace Transforms, Fourier Series, and Legendre Polynomials with solved exams, video courses, and interactive quiz arena.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
