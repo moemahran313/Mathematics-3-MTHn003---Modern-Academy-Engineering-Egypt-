@@ -16,13 +16,30 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { LECTURE_1_PAGES } from '../data/lecture1Data';
 import { LECTURE_2_PAGES } from '../data/lecture2Data';
+import { LECTURE_3_PAGES } from '../data/lecture3Data';
+import { LECTURE_4_PAGES } from '../data/lecture4Data';
+import { LECTURE_5_PAGES } from '../data/lecture5Data';
+import { LECTURE_6_PAGES } from '../data/lecture6Data';
+import { LECTURE_7_PAGES } from '../data/lecture7Data';
+import { LECTURE_8_PAGES } from '../data/lecture8Data';
+import { LECTURE_9_PAGES } from '../data/lecture9Data';
 import { MathView, FormattedText } from './MathView';
 import { LecturePage } from '../types';
 
-export const ALL_LECTURE_PAGES: LecturePage[] = [...LECTURE_1_PAGES, ...LECTURE_2_PAGES];
+export const ALL_LECTURE_PAGES: LecturePage[] = [
+  ...LECTURE_1_PAGES,
+  ...LECTURE_2_PAGES,
+  ...LECTURE_3_PAGES,
+  ...LECTURE_4_PAGES,
+  ...LECTURE_5_PAGES,
+  ...LECTURE_6_PAGES,
+  ...LECTURE_7_PAGES,
+  ...LECTURE_8_PAGES,
+  ...LECTURE_9_PAGES,
+];
 
 export const LectureHandoutView: React.FC = () => {
-  const [selectedLecture, setSelectedLecture] = useState<'all' | 1 | 2>(2);
+  const [selectedLecture, setSelectedLecture] = useState<'all' | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9>(9);
   const [selectedPageNumber, setSelectedPageNumber] = useState<number | 'all'>('all');
   const [expandedExamples, setExpandedExamples] = useState<Record<string, boolean>>({
     eg_p2_1: true,
@@ -35,6 +52,61 @@ export const LectureHandoutView: React.FC = () => {
     eg_p6_2: true,
     eg_p7_1: true,
     eg_p7_2: true,
+    eg_p9_1: true,
+    eg_p9_2: true,
+    eg_p9_3: true,
+    eg_p9_4: true,
+    eg_p10_1: true,
+    eg_p11_1: true,
+    eg_p12_1: true,
+    eg_p13_1: true,
+    eg_p13_2: true,
+    eg_p14_1: true,
+    eg_p14_2: true,
+    eg_p15_1: true,
+    eg_p16_1: true,
+    eg_p16_2: true,
+    eg_p17_1: true,
+    eg_p18_1: true,
+    eg_p18_2: true,
+    eg_p19_1: true,
+    eg_p19_3: true,
+    eg_p19_4: true,
+    eg_p20_1: true,
+    eg_p20_2: true,
+    eg_p20_6: true,
+    eg_p20_7: true,
+    eg_p21_1: true,
+    eg_p21_4: true,
+    eg_p21_5: true,
+    eg_p21_7: true,
+    eg_p22_1: true,
+    eg_p22_3: true,
+    eg_p22_5: true,
+    eg_p23_1: true,
+    eg_p23_5: true,
+    eg_p23_6: true,
+    eg_p24_1: true,
+    eg_p24_4: true,
+    eg_p25_2: true,
+    eg_p25_3: true,
+    eg_p26_1: true,
+    eg_p26_2: true,
+    eg_p27_1: true,
+    eg_p27_3: true,
+    eg_p27_4: true,
+    eg_p27_5: true,
+    eg_p28_1: true,
+    eg_p28_2: true,
+    eg_p28_3: true,
+    eg_p29_1: true,
+    eg_p29_2: true,
+    eg_p30_1: true,
+    eg_p31_1: true,
+    eg_p31_2: true,
+    eg_p32_1: true,
+    eg_p32_2: true,
+    eg_p33_1: true,
   });
 
   const toggleExample = (id: string) => {
@@ -46,6 +118,20 @@ export const LectureHandoutView: React.FC = () => {
       ? LECTURE_1_PAGES
       : selectedLecture === 2
       ? LECTURE_2_PAGES
+      : selectedLecture === 3
+      ? LECTURE_3_PAGES
+      : selectedLecture === 4
+      ? LECTURE_4_PAGES
+      : selectedLecture === 5
+      ? LECTURE_5_PAGES
+      : selectedLecture === 6
+      ? LECTURE_6_PAGES
+      : selectedLecture === 7
+      ? LECTURE_7_PAGES
+      : selectedLecture === 8
+      ? LECTURE_8_PAGES
+      : selectedLecture === 9
+      ? LECTURE_9_PAGES
       : ALL_LECTURE_PAGES;
 
   const pagesToDisplay =
@@ -66,7 +152,21 @@ export const LectureHandoutView: React.FC = () => {
                   ? 'WEEK 1 • LECTURE 1'
                   : selectedLecture === 2
                   ? 'WEEK 2 • LECTURE 2'
-                  : 'WEEKS 1 & 2 • ALL LECTURES'}
+                  : selectedLecture === 3
+                  ? 'WEEK 3 • LECTURE 3'
+                  : selectedLecture === 4
+                  ? 'WEEK 4 • LECTURE 4'
+                  : selectedLecture === 5
+                  ? 'WEEK 5 • LECTURE 5'
+                  : selectedLecture === 6
+                  ? 'WEEK 6 • LECTURE 6'
+                  : selectedLecture === 7
+                  ? 'WEEK 7 • LECTURE 7'
+                  : selectedLecture === 8
+                  ? 'WEEK 8 • LECTURE 8'
+                  : selectedLecture === 9
+                  ? 'WEEK 9 • LECTURE 9 (NEW)'
+                  : 'WEEKS 1 TO 9 • ALL LECTURES'}
               </span>
               <span
                 className="px-2.5 py-0.5 rounded-full text-[10px] font-sans text-amber-300 bg-amber-400/10 border border-amber-400/30"
@@ -76,7 +176,21 @@ export const LectureHandoutView: React.FC = () => {
                   ? 'المحاضرة الأولى: الرتبة والدرجة والخطية، وفصل المتغيرات والمتجانسة'
                   : selectedLecture === 2
                   ? 'المحاضرة الثانية: المعادلات التامة (Exact)، والخطية (Linear)، ومعادلة برنولي (Bernoulli)'
-                  : 'سجل المحاضرات الكامل: الأسبوع الأول والثاني'}
+                  : selectedLecture === 3
+                  ? 'المحاضرة الثالثة: معادلات الرتب العليا المتجانسة وتخفيض الرتبة (Reduction of Order)'
+                  : selectedLecture === 4
+                  ? 'المحاضرة الرابعة: المعادلات غير المتجانسة، والمعاملات غير المحددة، وقاعدة التعديل والضرب في x'
+                  : selectedLecture === 5
+                  ? 'المحاضرة الخامسة: طريقة تغير الثوابت (لاجرانج)، ومعادلة أويلر والمؤثر التفاضلي θ'
+                  : selectedLecture === 6
+                  ? 'المحاضرة السادسة: تحويل لابلاس، الدوال المثلثية والزائدية، ونظرية الإزاحة الأولى وإكمال المربع'
+                  : selectedLecture === 7
+                  ? 'المحاضرة السابعة: نظرية الإزاحة الثانية، دالة الخطوة لـ هيفيزيد، وتحويل لابلاس للتكاملات والقسمة على s'
+                  : selectedLecture === 8
+                  ? 'المحاضرة الثامنة: تفاضل وتكامل تحويل لابلاس (الضرب والقسمة على t)، وتريك معكوس اللوغاريتمات، وحل المعادلات التفاضلية'
+                  : selectedLecture === 9
+                  ? 'المحاضرة التاسعة: متسلسلات فورييه (Fourier Series)، الدوال الزوجية والفردية، ومتسلسلات نصف المدى (Sine & Cosine Series)'
+                  : 'سجل المحاضرات الكامل: الأسابيع ١، ٢، ٣، ٤، ٥، ٦، ٧، ٨ و ٩ (٣٣ صفحة شاملة)'}
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight flex items-center gap-2">
@@ -86,54 +200,159 @@ export const LectureHandoutView: React.FC = () => {
                   ? 'Lecture 1: Foundations, Separable & Homogeneous ODEs'
                   : selectedLecture === 2
                   ? 'Lecture 2: Exact, Linear, and Bernoulli Differential Equations'
-                  : 'Complete Lecture Handouts & Laws Reference (Lectures 1 & 2)'}
+                  : selectedLecture === 3
+                  ? 'Lecture 3: Higher-Order Homogeneous ODEs & Reduction of Order'
+                  : selectedLecture === 4
+                  ? 'Lecture 4: Non-Homogeneous ODEs & Undetermined Coefficients'
+                  : selectedLecture === 5
+                  ? 'Lecture 5: Variation of Parameters & Euler-Cauchy ODEs'
+                  : selectedLecture === 6
+                  ? 'Lecture 6: Laplace Transforms, First Shifting Theorem & Completing the Square'
+                  : selectedLecture === 7
+                  ? 'Lecture 7: Second Shifting Theorem, Heaviside Step Functions & Integrals Division by s'
+                  : selectedLecture === 8
+                  ? 'Lecture 8: Differentiation & Integration of Laplace Transforms, Log Inversion Tricks & ODEs'
+                  : selectedLecture === 9
+                  ? 'Lecture 9: Fourier Series Foundations, Parity Symmetry & Half-Range Sine/Cosine Expansions'
+                  : 'Complete Lecture Handouts & Laws Reference (Lectures 1 to 9)'}
               </span>
             </h2>
             <p className="text-xs text-slate-400 font-sans max-w-3xl leading-relaxed">
-              Complete transcribed reference directly from your handwritten notebook pages, featuring exact mathematical laws, Arabic explanations, Euler exactness tests, integrating factor shortcuts, and step-by-step derivations.
+              Complete transcribed reference directly from your handwritten notebook pages, featuring exact mathematical laws, Arabic explanations, Euler-Fourier coefficient integrals, even/odd parity simplifications, tabular integration by parts, and half-range Sine & Cosine series.
             </p>
           </div>
 
           {/* Lecture Switcher Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-slate-950/90 p-1.5 rounded-xl border border-slate-800 shrink-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 bg-slate-950/90 p-1.5 rounded-xl border border-slate-800 shrink-0 flex-wrap">
             <button
               onClick={() => {
                 setSelectedLecture(1);
                 setSelectedPageNumber('all');
               }}
-              className={`px-3 py-2 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 selectedLecture === 1
                   ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <span>Lecture 1 (Pages 1-4)</span>
+              <span>L1 (1-4)</span>
             </button>
             <button
               onClick={() => {
                 setSelectedLecture(2);
                 setSelectedPageNumber('all');
               }}
-              className={`px-3 py-2 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 selectedLecture === 2
                   ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <span>Lecture 2 (Pages 5-7)</span>
+              <span>L2 (5-7)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLecture(3);
+                setSelectedPageNumber('all');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                selectedLecture === 3
+                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span>L3 (8-11)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLecture(4);
+                setSelectedPageNumber('all');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                selectedLecture === 4
+                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span>L4 (12-14)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLecture(5);
+                setSelectedPageNumber('all');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                selectedLecture === 5
+                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span>L5 (15-18)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLecture(6);
+                setSelectedPageNumber('all');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                selectedLecture === 6
+                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span>L6 (19-21)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLecture(7);
+                setSelectedPageNumber('all');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                selectedLecture === 7
+                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span>L7 (22-25)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLecture(8);
+                setSelectedPageNumber('all');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                selectedLecture === 8
+                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span>L8 (26-29)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLecture(9);
+                setSelectedPageNumber('all');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                selectedLecture === 9
+                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <span>L9 (30-33)</span>
             </button>
             <button
               onClick={() => {
                 setSelectedLecture('all');
                 setSelectedPageNumber('all');
               }}
-              className={`px-3 py-2 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 selectedLecture === 'all'
                   ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <span>All 7 Pages</span>
+              <span>All 33</span>
             </button>
           </div>
         </div>
@@ -153,101 +372,159 @@ export const LectureHandoutView: React.FC = () => {
           >
             All Pages
           </button>
-          {currentLecturePages.map((p) => (
-            <button
-              key={p.pageNumber}
-              onClick={() => setSelectedPageNumber(p.pageNumber)}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer shrink-0 ${
-                selectedPageNumber === p.pageNumber
-                  ? 'bg-teal-400/20 text-teal-300 border border-teal-400/50'
-                  : 'text-slate-400 hover:text-slate-200 bg-slate-950 border border-slate-800'
-              }`}
-            >
-              Page [{p.pageNumber}]
-            </button>
-          ))}
+          {currentLecturePages.map((p) => {
+            const pageWeekLabel =
+              p.pageNumber <= 4
+                ? 'W1'
+                : p.pageNumber <= 7
+                ? 'W2'
+                : p.pageNumber <= 11
+                ? 'W3'
+                : p.pageNumber <= 14
+                ? 'W4'
+                : p.pageNumber <= 18
+                ? 'W5'
+                : p.pageNumber <= 21
+                ? 'W6'
+                : p.pageNumber <= 25
+                ? 'W7'
+                : p.pageNumber <= 29
+                ? 'W8'
+                : 'W9';
+            return (
+              <button
+                key={p.pageNumber}
+                onClick={() => setSelectedPageNumber(p.pageNumber)}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer shrink-0 ${
+                  selectedPageNumber === p.pageNumber
+                    ? 'bg-teal-400/20 text-teal-300 border border-teal-400/50'
+                    : 'text-slate-400 hover:text-slate-200 bg-slate-950 border border-slate-800'
+                }`}
+              >
+                Page [{p.pageNumber}] ({pageWeekLabel})
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Pages Content List */}
       <div className="space-y-8">
-        {pagesToDisplay.map((page) => (
-          <div
-            key={page.pageNumber}
-            id={`lecture-page-${page.pageNumber}`}
-            className="rounded-2xl border bg-slate-900/70 border-slate-800/90 shadow-lg overflow-hidden space-y-6 p-6"
-          >
-            {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center text-xs font-mono font-bold">
-                    {page.pageNumber}
-                  </span>
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-teal-400">
-                    Page [{page.pageNumber}] • {page.pageNumber <= 4 ? 'Lecture 1' : 'Lecture 2'}
-                  </span>
-                  <span className="text-xs text-slate-400 font-sans" dir="rtl">
-                    {page.arabicTitle}
-                  </span>
+        {pagesToDisplay.map((page) => {
+          const lectureNum =
+            page.pageNumber <= 4
+              ? 1
+              : page.pageNumber <= 7
+              ? 2
+              : page.pageNumber <= 11
+              ? 3
+              : page.pageNumber <= 14
+              ? 4
+              : page.pageNumber <= 18
+              ? 5
+              : page.pageNumber <= 21
+              ? 6
+              : page.pageNumber <= 25
+              ? 7
+              : page.pageNumber <= 29
+              ? 8
+              : 9;
+          const weekPageNum =
+            page.pageNumber <= 4
+              ? page.pageNumber
+              : page.pageNumber <= 7
+              ? page.pageNumber - 4
+              : page.pageNumber <= 11
+              ? page.pageNumber - 7
+              : page.pageNumber <= 14
+              ? page.pageNumber - 11 + 4 // notebook pages are 5, 6, 7 in week 4
+              : page.pageNumber <= 18
+              ? page.pageNumber - 15 + 8 // notebook pages are 8, 9, 10, 11 in week 5
+              : page.pageNumber <= 21
+              ? page.pageNumber - 18 // notebook pages are 1, 2, 3 in week 6
+              : page.pageNumber <= 25
+              ? page.pageNumber - 21 // notebook pages are 1, 2, 3, 4 in week 7
+              : page.pageNumber <= 29
+              ? page.pageNumber - 25 // notebook pages are 1, 2, 3, 4 in week 8
+              : page.pageNumber - 29; // notebook pages are 1, 2, 3, 4 in week 9
+
+          return (
+            <div
+              key={page.pageNumber}
+              id={`lecture-page-${page.pageNumber}`}
+              className="rounded-2xl border bg-slate-900/70 border-slate-800/90 shadow-lg overflow-hidden space-y-6 p-6"
+            >
+              {/* Page Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center text-xs font-mono font-bold">
+                      {page.pageNumber}
+                    </span>
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-teal-400">
+                      Page [{page.pageNumber}] • Week {lectureNum} Notebook [p.{weekPageNum}]
+                    </span>
+                    <span className="text-xs text-slate-400 font-sans" dir="rtl">
+                      {page.arabicTitle}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-100">
+                    {page.title}
+                  </h3>
                 </div>
-                <h3 className="text-lg font-bold text-slate-100">
-                  {page.title}
-                </h3>
+
+                <span className="text-[10px] uppercase font-mono font-bold text-slate-400 px-2.5 py-1 rounded bg-slate-950 border border-slate-800 self-start sm:self-auto">
+                  {page.topicCategory}
+                </span>
               </div>
 
-              <span className="text-[10px] uppercase font-mono font-bold text-slate-400 px-2.5 py-1 rounded bg-slate-950 border border-slate-800 self-start sm:self-auto">
-                {page.topicCategory}
-              </span>
-            </div>
+              {/* Page Summary */}
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans bg-slate-950/50 p-4 rounded-xl border border-slate-850">
+                {page.summary}
+              </p>
 
-            {/* Page Summary */}
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans bg-slate-950/50 p-4 rounded-xl border border-slate-850">
-              {page.summary}
-            </p>
+              {/* Laws & Rules Section */}
+              <div className="space-y-4">
+                <h4 className="text-xs font-extrabold uppercase font-mono tracking-wider text-teal-400 flex items-center gap-2">
+                  <Bookmark className="w-4 h-4 text-teal-400" />
+                  <span>Lecture Laws & Formula Rules (القوانين والشروط)</span>
+                </h4>
 
-            {/* Laws & Rules Section */}
-            <div className="space-y-4">
-              <h4 className="text-xs font-extrabold uppercase font-mono tracking-wider text-teal-400 flex items-center gap-2">
-                <Bookmark className="w-4 h-4 text-teal-400" />
-                <span>Lecture Laws & Formula Rules (القوانين والشروط)</span>
-              </h4>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {page.laws.map((law) => (
-                  <div
-                    key={law.id}
-                    className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 flex flex-col justify-between space-y-3"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <span className="text-xs font-bold text-slate-200">
-                          {law.name}
-                        </span>
-                        {law.arabicName && (
-                          <span className="text-xs text-teal-400 font-sans" dir="rtl">
-                            {law.arabicName}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {page.laws.map((law) => (
+                    <div
+                      key={law.id}
+                      className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 flex flex-col justify-between space-y-3"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-1.5">
+                          <span className="text-xs font-bold text-slate-200">
+                            {law.name}
                           </span>
+                          {law.arabicName && (
+                            <span className="text-xs text-teal-400 font-sans" dir="rtl">
+                              {law.arabicName}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-teal-300 text-xs sm:text-sm my-2 overflow-x-auto no-scrollbar">
+                          <MathView math={law.formula} block />
+                        </div>
+
+                        <p className="text-xs text-slate-400 leading-relaxed font-sans">
+                          {law.explanation}
+                        </p>
+
+                        {law.arabicExplanation && (
+                          <p
+                            className="text-xs text-amber-300/90 font-sans mt-2 leading-relaxed bg-amber-500/5 p-2 rounded-lg border border-amber-500/20"
+                            dir="rtl"
+                          >
+                            💡 <strong>الشرح:</strong> {law.arabicExplanation}
+                          </p>
                         )}
                       </div>
-
-                      <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-teal-300 text-xs sm:text-sm my-2 overflow-x-auto no-scrollbar">
-                        <MathView math={law.formula} block />
-                      </div>
-
-                      <p className="text-xs text-slate-400 leading-relaxed font-sans">
-                        {law.explanation}
-                      </p>
-
-                      {law.arabicExplanation && (
-                        <p
-                          className="text-xs text-amber-300/90 font-sans mt-2 leading-relaxed bg-amber-500/5 p-2 rounded-lg border border-amber-500/20"
-                          dir="rtl"
-                        >
-                          💡 <strong>الشرح:</strong> {law.arabicExplanation}
-                        </p>
-                      )}
-                    </div>
 
                     {law.conditions && law.conditions.length > 0 && (
                       <div className="pt-2 border-t border-slate-850 space-y-1.5">
@@ -454,7 +731,8 @@ export const LectureHandoutView: React.FC = () => {
               </div>
             )}
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

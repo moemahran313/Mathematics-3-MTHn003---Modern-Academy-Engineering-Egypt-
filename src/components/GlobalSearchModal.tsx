@@ -21,6 +21,13 @@ import { GLOSSARY_DATA } from '../data/glossaryData';
 import { PLAYLISTS_DATA } from '../data/videosData';
 import { LECTURE_1_PAGES } from '../data/lecture1Data';
 import { LECTURE_2_PAGES } from '../data/lecture2Data';
+import { LECTURE_3_PAGES } from '../data/lecture3Data';
+import { LECTURE_4_PAGES } from '../data/lecture4Data';
+import { LECTURE_5_PAGES } from '../data/lecture5Data';
+import { LECTURE_6_PAGES } from '../data/lecture6Data';
+import { LECTURE_7_PAGES } from '../data/lecture7Data';
+import { LECTURE_8_PAGES } from '../data/lecture8Data';
+import { LECTURE_9_PAGES } from '../data/lecture9Data';
 import { SearchResultItem, Category } from '../types';
 import { MathView, FormattedText } from './MathView';
 import { motion, AnimatePresence } from 'motion/react';
@@ -169,9 +176,36 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       });
     });
 
-    // 6. Lecture Handout Pages & Solved Examples (Weeks 1 & 2)
-    [...LECTURE_1_PAGES, ...LECTURE_2_PAGES].forEach((page) => {
-      const lecNum = page.pageNumber <= 4 ? 1 : 2;
+    // 6. Lecture Handout Pages & Solved Examples (Weeks 1 to 9)
+    [
+      ...LECTURE_1_PAGES,
+      ...LECTURE_2_PAGES,
+      ...LECTURE_3_PAGES,
+      ...LECTURE_4_PAGES,
+      ...LECTURE_5_PAGES,
+      ...LECTURE_6_PAGES,
+      ...LECTURE_7_PAGES,
+      ...LECTURE_8_PAGES,
+      ...LECTURE_9_PAGES,
+    ].forEach((page) => {
+      const lecNum =
+        page.pageNumber <= 4
+          ? 1
+          : page.pageNumber <= 7
+          ? 2
+          : page.pageNumber <= 11
+          ? 3
+          : page.pageNumber <= 14
+          ? 4
+          : page.pageNumber <= 18
+          ? 5
+          : page.pageNumber <= 21
+          ? 6
+          : page.pageNumber <= 25
+          ? 7
+          : page.pageNumber <= 29
+          ? 8
+          : 9;
       items.push({
         id: `lec_page_${page.pageNumber}`,
         title: `Lecture ${lecNum}: Page [${page.pageNumber}] - ${page.title}`,

@@ -758,4 +758,113 @@ export const PRACTICE_PROBLEMS_DATA: PracticeProblem[] = [
       },
     ],
   },
+  // --- Lecture 9 (Week 9) Practice Problems: Fourier Series ---
+  {
+    id: 'pr_lec9_fourier_x',
+    topicId: 'ch5_fourier_series',
+    category: Category.FOURIER_SERIES,
+    question: 'Find the Fourier series for $f(x) = x$ on the symmetric interval $-\\pi < x < \\pi$ (from Lecture 9)',
+    difficulty: 'Medium',
+    techniques: ['Odd function parity', 'Tabular integration by parts', 'Harmonic evaluation cos(nπ)=(-1)ⁿ'],
+    finalAnswer: 'f(x) = \\sum_{n=1}^\\infty \\frac{2(-1)^{n+1}}{n}\\sin(nx)',
+    steps: [
+      {
+        title: 'Determine function parity and zero coefficients',
+        explanation: 'Since f(-x) = -x = -f(x), f(x) is an odd function on [-π, π]. Thus a₀ = 0 and aₙ = 0.',
+        mathFormula: 'f(-x) = -f(x) \\implies a_0 = a_n = 0, \\quad T = \\pi',
+      },
+      {
+        title: 'Set up the sine coefficient integral bn',
+        explanation: 'Use the odd function formula integrating from 0 to π.',
+        mathFormula: 'b_n = \\frac{2}{\\pi}\\int_0^\\pi x \\sin(nx)\\,dx',
+      },
+      {
+        title: 'Integrate by parts',
+        explanation: 'Apply tabular integration to x sin(nx).',
+        mathFormula: '\\int x \\sin(nx)\\,dx = -\\frac{x\\cos(nx)}{n} + \\frac{\\sin(nx)}{n^2}',
+      },
+      {
+        title: 'Evaluate bounds at π and 0',
+        explanation: 'Substitute bounds with cos(nπ) = (-1)ⁿ and sin(nπ) = 0.',
+        mathFormula: 'b_n = \\frac{2}{\\pi}\\left[-\\frac{\\pi(-1)^n}{n}\\right] = -\\frac{2}{n}(-1)^n = \\frac{2(-1)^{n+1}}{n}',
+      },
+      {
+        title: 'Write the Fourier series',
+        explanation: 'Assemble the final sine series.',
+        mathFormula: 'f(x) = \\sum_{n=1}^\\infty \\frac{2(-1)^{n+1}}{n}\\sin(nx)',
+      },
+    ],
+  },
+  {
+    id: 'pr_lec9_cosine_x',
+    topicId: 'ch5_fourier_series',
+    category: Category.FOURIER_SERIES,
+    question: 'Find the Half-Range Fourier Cosine series for $f(x) = x$ on the interval $0 < x < 1$ (from Lecture 9)',
+    difficulty: 'Medium',
+    techniques: ['Fourier Cosine half-range', 'Even extension', 'Lower bound cos(0)=1 evaluation'],
+    finalAnswer: 'f(x) = \\frac{1}{2} + \\sum_{n=1}^\\infty \\frac{2\\left((-1)^n - 1\\right)}{n^2\\pi^2}\\cos(n\\pi x)',
+    steps: [
+      {
+        title: 'Identify half-range parameters and zero coefficients',
+        explanation: 'For Fourier Cosine series on [0, 1], set T = 1 and bn = 0.',
+        mathFormula: 'T = 1, \\quad b_n = 0',
+      },
+      {
+        title: 'Compute constant term a0',
+        explanation: 'Integrate f(x) = x from 0 to 1 multiplied by 2/T.',
+        mathFormula: 'a_0 = \\frac{2}{1}\\int_0^1 x\\,dx = 2\\left[\\frac{x^2}{2}\\right]_0^1 = 1 \\implies \\frac{a_0}{2} = \\frac{1}{2}',
+      },
+      {
+        title: 'Set up an integral with tabular integration',
+        explanation: 'Integrate 2 x cos(nπx) from 0 to 1.',
+        mathFormula: 'a_n = 2\\int_0^1 x \\cos(n\\pi x)\\,dx = 2\\left[\\frac{x\\sin(n\\pi x)}{n\\pi} + \\frac{\\cos(n\\pi x)}{n^2\\pi^2}\\right]_0^1',
+      },
+      {
+        title: 'Evaluate upper bound x=1 and lower bound x=0',
+        explanation: 'At x=1, cos(nπ) = (-1)ⁿ. At x=0, cos(0) = 1.',
+        mathFormula: 'a_n = 2\\left[\\frac{(-1)^n}{n^2\\pi^2} - \\frac{1}{n^2\\pi^2}\\right] = \\frac{2\\left((-1)^n - 1\\right)}{n^2\\pi^2}',
+      },
+      {
+        title: 'Construct the Fourier Cosine series',
+        explanation: 'Combine the constant term and cosine harmonics.',
+        mathFormula: 'f(x) = \\frac{1}{2} + \\sum_{n=1}^\\infty \\frac{2\\left((-1)^n - 1\\right)}{n^2\\pi^2}\\cos(n\\pi x)',
+      },
+    ],
+  },
+  {
+    id: 'pr_lec9_sine_x2',
+    topicId: 'ch5_fourier_series',
+    category: Category.FOURIER_SERIES,
+    question: 'Find the Half-Range Fourier Sine series for $f(x) = x^2$ on the interval $0 < x < 2$ (from Lecture 9)',
+    difficulty: 'Hard',
+    techniques: ['Fourier Sine half-range', '3-step tabular integration', 'Fraction power simplification'],
+    finalAnswer: 'f(x) = \\sum_{n=1}^\\infty \\left[ -\\frac{8(-1)^n}{n\\pi} + \\frac{16\\left((-1)^n - 1\\right)}{n^3\\pi^3} \\right] \\sin\\left(\\frac{n\\pi}{2}x\\right)',
+    steps: [
+      {
+        title: 'Identify parameters and vanishing coefficients',
+        explanation: 'For Fourier Sine series on [0, 2], set T = 2 and a₀ = aₙ = 0.',
+        mathFormula: 'T = 2, \\quad a_0 = a_n = 0',
+      },
+      {
+        title: 'Set up the integral for bn',
+        explanation: 'Multiply by 2/T = 2/2 = 1.',
+        mathFormula: 'b_n = \\frac{2}{2}\\int_0^2 x^2 \\sin\\left(\\frac{n\\pi}{2}x\\right)dx = \\int_0^2 x^2 \\sin\\left(\\frac{n\\pi}{2}x\\right)dx',
+      },
+      {
+        title: 'Tabular integration by parts (3 steps)',
+        explanation: 'Differentiate x² down to 0 and integrate sin(nπx/2) with k = nπ/2.',
+        mathFormula: '\\int x^2 \\sin(kx)\\,dx = -\\frac{x^2\\cos(kx)}{k} + \\frac{2x\\sin(kx)}{k^2} + \\frac{2\\cos(kx)}{k^3}',
+      },
+      {
+        title: 'Evaluate at upper limit x = 2 and lower limit x = 0',
+        explanation: 'Substitute bounds and simplify: at x=2, cos(nπ)=(-1)ⁿ; at x=0, cos(0)=1.',
+        mathFormula: 'b_n = -\\frac{4(-1)^n}{\\frac{n\\pi}{2}} + \\frac{2(-1)^n}{\\left(\\frac{n\\pi}{2}\\right)^3} - \\frac{2}{\\left(\\frac{n\\pi}{2}\\right)^3} = -\\frac{8(-1)^n}{n\\pi} + \\frac{16\\left((-1)^n - 1\\right)}{n^3\\pi^3}',
+      },
+      {
+        title: 'Assemble the Fourier Sine series',
+        explanation: 'Write out the full summation in terms of sine harmonics.',
+        mathFormula: 'f(x) = \\sum_{n=1}^\\infty \\left[ -\\frac{8(-1)^n}{n\\pi} + \\frac{16\\left((-1)^n - 1\\right)}{n^3\\pi^3} \\right] \\sin\\left(\\frac{n\\pi}{2}x\\right)',
+      },
+    ],
+  },
 ];

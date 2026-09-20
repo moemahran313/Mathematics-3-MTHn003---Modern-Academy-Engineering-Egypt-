@@ -110,9 +110,9 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            <span>📝 LECTURE NOTEBOOK & LAWS (WEEKS 1 & 2)</span>
+            <span>📝 LECTURE NOTEBOOK & LAWS (WEEKS 1 TO 9)</span>
             <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] bg-slate-950/40 border border-teal-600/30 text-teal-950 font-sans" dir="rtl">
-              المحاضرات ١ و ٢
+              المحاضرات من ١ إلى ٩
             </span>
           </button>
 
