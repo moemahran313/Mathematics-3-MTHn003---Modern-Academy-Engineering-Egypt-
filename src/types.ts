@@ -152,10 +152,58 @@ export interface TopicProgress {
   mastered: boolean;
 }
 
+export interface LectureStep {
+  step: string;
+  formula?: string;
+  explanation?: string;
+}
+
+export interface LectureExample {
+  id: string;
+  title: string;
+  problem: string;
+  mathFormula?: string;
+  steps: LectureStep[];
+  finalAnswer: string;
+  arabicNote?: string;
+}
+
+export interface LectureLaw {
+  id: string;
+  name: string;
+  arabicName?: string;
+  formula: string;
+  explanation: string;
+  arabicExplanation?: string;
+  conditions?: string[];
+}
+
+export interface ClassificationExercise {
+  id: string;
+  equation: string;
+  formula: string;
+  order: number;
+  degree: number;
+  isLinear: boolean;
+  reason: string;
+}
+
+export interface LecturePage {
+  pageNumber: number;
+  title: string;
+  arabicTitle: string;
+  topicCategory: Category;
+  summary: string;
+  laws: LectureLaw[];
+  exercises?: ClassificationExercise[];
+  examples?: LectureExample[];
+  examTricks: string[];
+}
+
 export interface SearchResultItem {
   id: string;
   title: string;
-  type: 'topic' | 'formula' | 'practice' | 'exam' | 'glossary' | 'video';
+  type: 'topic' | 'formula' | 'practice' | 'exam' | 'glossary' | 'video' | 'lecture';
   category: Category;
   subtitle: string;
   snippet: string;

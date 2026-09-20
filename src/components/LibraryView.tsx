@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronDown, ChevronUp, BookOpen, CheckCircle, Lightbulb, Zap, ArrowRight, Layers, FileText } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, BookOpen, CheckCircle, Lightbulb, Zap, ArrowRight, Layers, FileText, Sparkles, BookmarkCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Category, Topic, PracticeProblem } from '../types';
 import { TOPICS_DATA } from '../data/topicsData';
 import { PRACTICE_PROBLEMS_DATA } from '../data/practiceProblemsData';
 import { MathView, FormattedText } from './MathView';
+import { Lecture1HandoutView } from './Lecture1HandoutView';
 
 interface LibraryViewProps {
   initialCategory?: Category;
@@ -19,6 +20,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
   onNavigateToExams,
   onNavigateToQuiz,
 }) => {
+  const [activeTab, setActiveTab] = useState<'standard' | 'lecture1'>('lecture1');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'All');
 
@@ -96,74 +98,110 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
 
   return (
     <div className="space-y-8 animate-fadeIn">
-      {/* Top Search & Filter Bar */}
-      <div className="p-6 rounded-2xl border bg-slate-900/70 border-slate-800 shadow-xl space-y-4">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input
-              type="text"
-              placeholder="Search ODEs, Laplace transforms, Fourier series, exactness, auxiliary eq, formulas..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-20 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all font-sans"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-300 font-semibold cursor-pointer"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400 uppercase font-mono whitespace-nowrap">
-              Filter:
-            </span>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="p-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-xs font-semibold focus:outline-none focus:border-teal-400 text-slate-200 cursor-pointer max-w-[240px]"
-            >
-              <option value="All">All Topics / Categories</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Quick Pills Bar */}
-        <div className="flex items-center gap-2 pt-1 overflow-x-auto no-scrollbar pb-1">
+      {/* Top Switcher: Lecture 1 Handout vs Full Chapters */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-2 rounded-2xl bg-slate-900/80 border border-slate-800">
+        <div className="flex items-center gap-2 p-1 bg-slate-950/80 rounded-xl border border-slate-850 flex-1">
           <button
-            onClick={() => setSelectedCategory('All')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono border transition-all shrink-0 cursor-pointer ${
-              selectedCategory === 'All'
-                ? 'bg-teal-500/10 text-teal-400 border-teal-500/40'
-                : 'bg-transparent text-slate-400 border-slate-800 hover:text-slate-300 hover:border-slate-700'
+            onClick={() => setActiveTab('lecture1')}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'lecture1'
+                ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
             }`}
           >
-            ALL TOPICS ({TOPICS_DATA.length})
+            <Sparkles className="w-4 h-4" />
+            <span>📝 LECTURE NOTEBOOK & LAWS (WEEKS 1 & 2)</span>
+            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] bg-slate-950/40 border border-teal-600/30 text-teal-950 font-sans" dir="rtl">
+              المحاضرات ١ و ٢
+            </span>
           </button>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono border transition-all shrink-0 cursor-pointer truncate max-w-[220px] ${
-                selectedCategory === cat
-                  ? 'bg-teal-500/10 text-teal-400 border-teal-500/40 shadow-xs'
-                  : 'bg-transparent text-slate-400 border-slate-800 hover:text-slate-300 hover:border-slate-700'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+
+          <button
+            onClick={() => setActiveTab('standard')}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'standard'
+                ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>📚 ALL CHAPTERS & FORMULAS ({TOPICS_DATA.length})</span>
+          </button>
         </div>
       </div>
+
+      {activeTab === 'lecture1' ? (
+        <Lecture1HandoutView />
+      ) : (
+        <>
+          {/* Top Search & Filter Bar */}
+          <div className="p-6 rounded-2xl border bg-slate-900/70 border-slate-800 shadow-xl space-y-4">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="text"
+                  placeholder="Search ODEs, Laplace transforms, Fourier series, exactness, auxiliary eq, formulas..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-20 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all font-sans"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-300 font-semibold cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-400 uppercase font-mono whitespace-nowrap">
+                  Filter:
+                </span>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="p-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-xs font-semibold focus:outline-none focus:border-teal-400 text-slate-200 cursor-pointer max-w-[240px]"
+                >
+                  <option value="All">All Topics / Categories</option>
+                  {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Quick Pills Bar */}
+            <div className="flex items-center gap-2 pt-1 overflow-x-auto no-scrollbar pb-1">
+              <button
+                onClick={() => setSelectedCategory('All')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono border transition-all shrink-0 cursor-pointer ${
+                  selectedCategory === 'All'
+                    ? 'bg-teal-500/10 text-teal-400 border-teal-500/40'
+                    : 'bg-transparent text-slate-400 border-slate-800 hover:text-slate-300 hover:border-slate-700'
+                }`}
+              >
+                ALL TOPICS ({TOPICS_DATA.length})
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono border transition-all shrink-0 cursor-pointer truncate max-w-[220px] ${
+                    selectedCategory === cat
+                      ? 'bg-teal-500/10 text-teal-400 border-teal-500/40 shadow-xs'
+                      : 'bg-transparent text-slate-400 border-slate-800 hover:text-slate-300 hover:border-slate-700'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
 
       {/* Main Grid: Left Topics & Problems (2 cols), Right Habit & Tips (1 col) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -491,6 +529,8 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
           </div>
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 };

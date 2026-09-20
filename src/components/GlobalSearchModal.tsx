@@ -19,6 +19,8 @@ import { PRACTICE_PROBLEMS_DATA } from '../data/practiceProblemsData';
 import { EXAMS_DATA } from '../data/examsData';
 import { GLOSSARY_DATA } from '../data/glossaryData';
 import { PLAYLISTS_DATA } from '../data/videosData';
+import { LECTURE_1_PAGES } from '../data/lecture1Data';
+import { LECTURE_2_PAGES } from '../data/lecture2Data';
 import { SearchResultItem, Category } from '../types';
 import { MathView, FormattedText } from './MathView';
 import { motion, AnimatePresence } from 'motion/react';
@@ -167,6 +169,49 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       });
     });
 
+    // 6. Lecture Handout Pages & Solved Examples (Weeks 1 & 2)
+    [...LECTURE_1_PAGES, ...LECTURE_2_PAGES].forEach((page) => {
+      const lecNum = page.pageNumber <= 4 ? 1 : 2;
+      items.push({
+        id: `lec_page_${page.pageNumber}`,
+        title: `Lecture ${lecNum}: Page [${page.pageNumber}] - ${page.title}`,
+        type: 'lecture',
+        category: page.topicCategory,
+        subtitle: `${page.arabicTitle} • Lecture ${lecNum} Handout`,
+        snippet: page.summary,
+        targetTab: 'library',
+        targetId: `lecture-page-${page.pageNumber}`,
+      });
+
+      page.laws.forEach((law) => {
+        items.push({
+          id: `lec_law_${law.id}`,
+          title: `${law.name} ${law.arabicName ? `(${law.arabicName})` : ''}`,
+          type: 'lecture',
+          category: page.topicCategory,
+          subtitle: `Lecture ${lecNum} Law • Page ${page.pageNumber}`,
+          snippet: `${law.explanation} ${law.arabicExplanation || ''}`,
+          formula: law.formula,
+          targetTab: 'library',
+          targetId: `lecture-page-${page.pageNumber}`,
+        });
+      });
+
+      page.examples?.forEach((eg) => {
+        items.push({
+          id: `lec_eg_${eg.id}`,
+          title: `Lecture ${lecNum}: ${eg.title}`,
+          type: 'lecture',
+          category: page.topicCategory,
+          subtitle: `Handout Solved Example • Page ${page.pageNumber}`,
+          snippet: `Problem: ${eg.problem} Solution: ${eg.finalAnswer}`,
+          formula: eg.mathFormula || eg.finalAnswer,
+          targetTab: 'library',
+          targetId: `lecture-page-${page.pageNumber}`,
+        });
+      });
+    });
+
     return items;
   }, []);
 
@@ -189,6 +234,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
   const typeTabs = [
     { id: 'all', label: 'All Results' },
+    { id: 'lecture', label: 'Lecture Notes (Weeks 1 & 2)' },
     { id: 'topic', label: 'Chapters' },
     { id: 'formula', label: 'Formulas' },
     { id: 'practice', label: 'Practice Problems' },
@@ -198,8 +244,11 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   ];
 
   const quickSearchQueries = [
-    'Bernoulli',
+    'Lecture 1',
+    'Order and Degree',
     'Separable',
+    'Homogeneous',
+    'Bernoulli',
     'Exact ODE',
     'Integrating Factor',
     'First Shift',
@@ -220,6 +269,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
   const getTypeIcon = (type: SearchResultItem['type']) => {
     switch (type) {
+      case 'lecture':
+        return <Sparkles className="w-4 h-4 text-teal-300" />;
       case 'topic':
         return <BookOpen className="w-4 h-4 text-teal-400" />;
       case 'formula':
