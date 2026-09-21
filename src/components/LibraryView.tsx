@@ -97,35 +97,50 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
   const categories = Object.values(Category).filter((c) => c !== Category.ALL);
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* Top Switcher: Lecture 1 Handout vs Full Chapters */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-2 rounded-2xl bg-slate-900/80 border border-slate-800">
-        <div className="flex items-center gap-2 p-1 bg-slate-950/80 rounded-xl border border-slate-850 flex-1">
+    <div className="space-y-6 animate-fadeIn">
+      {/* Refined Segmented View Switcher */}
+      <div className="flex items-center justify-center sm:justify-start">
+        <div className="inline-flex p-1 bg-slate-900/90 rounded-2xl border border-slate-800/90 shadow-sm w-full sm:w-auto">
           <button
             onClick={() => setActiveTab('lecture1')}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2.5 ${
               activeTab === 'lecture1'
                 ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
-            <span>📝 LECTURE NOTEBOOK & LAWS (WEEKS 1 TO 9)</span>
-            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] bg-slate-950/40 border border-teal-600/30 text-teal-950 font-sans" dir="rtl">
-              المحاضرات من ١ إلى ٩
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span>Lecture Notebook</span>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold transition-colors ${
+                activeTab === 'lecture1'
+                  ? 'bg-teal-950/20 text-slate-950 border border-teal-600/30'
+                  : 'bg-slate-950 text-slate-400 border border-slate-800'
+              }`}
+            >
+              Weeks 1–9
             </span>
           </button>
 
           <button
             onClick={() => setActiveTab('standard')}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-xs font-bold font-mono flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2.5 ${
               activeTab === 'standard'
                 ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
             }`}
           >
-            <Layers className="w-4 h-4" />
-            <span>📚 ALL CHAPTERS & FORMULAS ({TOPICS_DATA.length})</span>
+            <Layers className="w-3.5 h-3.5 shrink-0" />
+            <span>Formula Chapters</span>
+            <span
+              className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold transition-colors ${
+                activeTab === 'standard'
+                  ? 'bg-teal-950/20 text-slate-950 border border-teal-600/30'
+                  : 'bg-slate-950 text-slate-400 border border-slate-800'
+              }`}
+            >
+              17 Topics
+            </span>
           </button>
         </div>
       </div>

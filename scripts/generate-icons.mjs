@@ -2,13 +2,12 @@ import fs from 'fs';
 import zlib from 'zlib';
 
 function createPNG(width, height, drawPixelFn) {
-  // RGBA buffer: (width * 4 + 1 filter byte) * height
   const rowSize = width * 4 + 1;
   const rawData = Buffer.alloc(rowSize * height);
 
   for (let y = 0; y < height; y++) {
     const rowOffset = y * rowSize;
-    rawData[rowOffset] = 0; // Filter type 0 (None)
+    rawData[rowOffset] = 0;
     for (let x = 0; x < width; x++) {
       const [r, g, b, a] = drawPixelFn(x, y, width, height);
       const pxOffset = rowOffset + 1 + x * 4;
@@ -20,11 +19,8 @@ function createPNG(width, height, drawPixelFn) {
   }
 
   const compressed = zlib.deflateSync(rawData);
-
-  // PNG Signature
   const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
-  // CRC32 table & calculator
   const crcTable = [];
   for (let n = 0; n < 256; n++) {
     let c = n;
@@ -53,15 +49,14 @@ function createPNG(width, height, drawPixelFn) {
     return Buffer.concat([len, combined, crc]);
   }
 
-  // IHDR chunk
   const ihdrData = Buffer.alloc(13);
   ihdrData.writeUInt32BE(width, 0);
   ihdrData.writeUInt32BE(height, 4);
-  ihdrData[8] = 8; // Bit depth: 8
-  ihdrData[9] = 6; // Color type: 6 (RGBA)
-  ihdrData[10] = 0; // Compression: 0
-  ihdrData[11] = 0; // Filter: 0
-  ihdrData[12] = 0; // Interlace: 0
+  ihdrData[8] = 8;
+  ihdrData[9] = 6;
+  ihdrData[10] = 0;
+  ihdrData[11] = 0;
+  ihdrData[12] = 0;
 
   const ihdrChunk = makeChunk('IHDR', ihdrData);
   const idatChunk = makeChunk('IDAT', compressed);
@@ -70,7 +65,7 @@ function createPNG(width, height, drawPixelFn) {
   return Buffer.concat([signature, ihdrChunk, idatChunk, iendChunk]);
 }
 
-// Draw Math 3 App Icon (Dark teal gradient background with Math icon / stylized M3)
+// Draw Greek Alpha (α) App Icon
 function mathIconPainter(x, y, w, h, isMaskable = false) {
   const cx = w / 2;
   const cy = h / 2;
@@ -82,53 +77,45 @@ function mathIconPainter(x, y, w, h, isMaskable = false) {
 
   // Background gradient: Dark Slate to Deep Teal
   const t = (x + y) / (w + h);
-  let bgR = Math.round(15 + 5 * t);
-  let bgG = Math.round(23 + 45 * t);
-  let bgB = Math.round(42 + 40 * t);
+  let bgR = Math.round(2 + 8 * t);
+  let bgG = Math.round(6 + 28 * t);
+  let bgB = Math.round(23 + 24 * t);
 
-  // Outer rounded border
   if (!isMaskable && dist > radius) {
-    return [0, 0, 0, 0]; // Transparent outside circle for non-maskable standard icon
+    return [0, 0, 0, 0];
   }
 
-  // Border ring highlight
   if (Math.abs(dist - radius) < w * 0.015) {
     return [45, 212, 191, 220]; // Teal accent border
   }
 
-  // Draw stylized Math "∫" symbol or "M3" in center
-  // Normalized coordinates (-1 to 1) inside safe zone
-  const nx = (x - cx) / (w * 0.35);
-  const ny = (y - cy) / (h * 0.35);
+  // Normalized coords for Greek Alpha (α): nx in [-1, 1], ny in [-1, 1]
+  const nx = (x - cx) / (w * 0.38);
+  const ny = (y - cy) / (h * 0.38);
 
-  // Draw Integral sign curve: x = 0.3 * sin(ny * PI)
-  const curveX = 0.25 * Math.sin(ny * 2.5);
-  const curveDist = Math.abs(nx - curveX);
+  // Loop of alpha on the left: centered around (-0.2, 0)
+  const loopDist = Math.sqrt(Math.pow((nx - (-0.2)) / 0.52, 2) + Math.pow(ny / 0.52, 2));
+  const isLoopBand = loopDist >= 0.65 && loopDist <= 1.05 && nx <= 0.2;
 
-  if (ny >= -0.85 && ny <= 0.85 && curveDist < 0.14) {
-    // Gradient on integral symbol (Teal to Cyan)
-    return [45, 212, 191, 255];
-  }
+  // Upper right leg / stroke: line from (0.0, 0.0) going up-right to (0.7, -0.6)
+  const upLineDist = Math.abs(ny - (-0.85 * nx));
+  const isUpStroke = upLineDist <= 0.22 && nx >= -0.1 && nx <= 0.75 && ny >= -0.7 && ny <= 0.15;
 
-  // Top and bottom curl of integral
-  const topCurlDist = Math.sqrt(Math.pow(nx - 0.22, 2) + Math.pow(ny - (-0.85), 2));
-  const btmCurlDist = Math.sqrt(Math.pow(nx - (-0.22), 2) + Math.pow(ny - 0.85, 2));
-  if (topCurlDist < 0.16 || btmCurlDist < 0.16) {
-    return [45, 212, 191, 255];
-  }
+  // Lower right leg / stroke: line from (0.0, 0.0) going down-right to (0.7, 0.6)
+  const downLineDist = Math.abs(ny - (0.85 * nx));
+  const isDownStroke = downLineDist <= 0.22 && nx >= -0.1 && nx <= 0.75 && ny >= -0.15 && ny <= 0.7;
 
-  // Subtle "3" superscript near top right
-  const supX = (x - (cx + w * 0.18)) / (w * 0.12);
-  const supY = (y - (cy - h * 0.16)) / (h * 0.12);
-  const supDist = Math.sqrt(supX * supX + supY * supY);
-  if (supDist < 0.7 && supDist > 0.4 && supX > -0.2) {
-    return [251, 191, 36, 255]; // Amber "3"
+  if (isLoopBand || isUpStroke || isDownStroke) {
+    const gradFactor = (nx + ny + 2) / 4;
+    const r = Math.round(45 + 10 * gradFactor);
+    const g = Math.round(212 + (182 - 212) * gradFactor);
+    const b = Math.round(191 + (248 - 191) * gradFactor);
+    return [r, g, b, 255];
   }
 
   return [bgR, bgG, bgB, 255];
 }
 
-// Generate Icons
 const sizes = [
   { file: 'pwa-192x192.png', size: 192, maskable: false },
   { file: 'pwa-512x512.png', size: 512, maskable: false },
@@ -147,27 +134,28 @@ for (const { file, size, maskable } of sizes) {
   console.log(`Generated public/${file} (${size}x${size})`);
 }
 
-// Also write public/icon.svg
 const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#091828" />
-      <stop offset="100%" stop-color="#0d3b4c" />
+      <stop offset="0%" stop-color="#020617" />
+      <stop offset="50%" stop-color="#0b1e2e" />
+      <stop offset="100%" stop-color="#042f2e" />
     </linearGradient>
-    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="alphaGrad" x1="15%" y1="10%" x2="85%" y2="90%">
       <stop offset="0%" stop-color="#2dd4bf" />
-      <stop offset="100%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#38bdf8" />
     </linearGradient>
     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#2dd4bf" flood-opacity="0.3" />
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#2dd4bf" flood-opacity="0.45" />
     </filter>
   </defs>
-  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" stroke="#2dd4bf" stroke-width="8" stroke-opacity="0.5"/>
-  <path d="M 270 120 C 270 95 245 80 220 80 C 190 80 175 105 175 130 C 175 160 200 180 235 225 L 275 285 C 310 330 335 355 335 385 C 335 410 320 435 290 435 C 265 435 240 420 240 395" fill="none" stroke="url(#tealGrad)" stroke-width="32" stroke-linecap="round" filter="url(#glow)"/>
-  <!-- Superscript 3 in Amber -->
-  <text x="350" y="190" font-family="system-ui, -apple-system, sans-serif" font-size="110" font-weight="900" fill="#fbbf24" filter="url(#glow)">3</text>
-  <!-- Base label "MATH" -->
-  <text x="256" y="475" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="800" fill="#94a3b8" text-anchor="middle" letter-spacing="4">MATH 3</text>
+  <rect width="512" height="512" rx="120" fill="url(#bgGrad)" stroke="#2dd4bf" stroke-width="8" stroke-opacity="0.4"/>
+  <path
+    d="M 405 150 C 370 150 330 190 290 250 C 255 195 210 160 160 160 C 95 160 50 205 50 270 C 50 335 95 380 160 380 C 210 380 255 345 290 290 C 330 350 370 390 405 390 C 420 390 432 380 435 365 C 438 350 430 338 415 335 C 385 330 350 295 320 250 C 350 205 385 170 415 165 C 430 162 438 150 435 135 C 432 120 420 110 405 110 C 390 110 375 125 360 145 M 160 210 C 190 210 220 235 250 270 C 220 305 190 330 160 330 C 125 330 100 305 100 270 C 100 235 125 210 160 210 Z"
+    fill="url(#alphaGrad)"
+    filter="url(#glow)"
+  />
 </svg>`;
 
 fs.writeFileSync('public/icon.svg', svgContent);

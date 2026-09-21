@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Menu,
-  Compass,
   BookOpen,
   Video,
   Trophy,
@@ -24,6 +23,7 @@ import { FormulaSheetView } from './components/FormulaSheetView';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { OfflineStatusBar } from './components/OfflineStatusBar';
+import { PartialDiffLogo } from './components/PartialDiffLogo';
 import { Category } from './types';
 
 export default function App() {
@@ -92,9 +92,7 @@ export default function App() {
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                <Compass className="w-4 h-4" />
-              </div>
+              <PartialDiffLogo className="w-4 h-4 text-teal-400" />
               <span className="text-xs font-mono font-extrabold text-slate-100 tracking-tight">
                 Math 3
               </span>
@@ -122,43 +120,45 @@ export default function App() {
           </div>
         </header>
 
-        {/* Desktop Top Notification / Header Bar */}
-        <div className="hidden md:flex items-center justify-between px-8 py-4 border-b border-slate-850/80 bg-slate-950/60 backdrop-blur-sm text-xs">
-          <div className="flex items-center gap-3">
+        {/* Desktop Top Header Bar */}
+        <div className="hidden md:flex items-center justify-between px-8 py-3.5 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md text-xs">
+          <div className="flex items-center gap-2.5">
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
             </span>
-            <span className="font-mono text-slate-400">
-              Modern Academy Curriculum Hub • MTH203 / MTHn103
+            <span className="font-mono font-medium text-slate-300">
+              Modern Academy Curriculum
             </span>
-
-            {/* Quick Search Trigger button */}
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="ml-3 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-teal-500/40 text-slate-400 hover:text-slate-200 transition-all font-mono text-[11px] cursor-pointer"
-            >
-              <Search className="w-3.5 h-3.5 text-teal-400" />
-              <span>Search curriculum, formulas, terms...</span>
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-500">
-                ⌘K
-              </kbd>
-            </button>
+            <span className="text-slate-600 font-mono">•</span>
+            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[11px] font-mono text-teal-400 font-semibold">
+              MTH203 / MTHn103
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Quick Search Trigger button */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-teal-500/50 text-slate-400 hover:text-slate-200 transition-all font-mono text-xs cursor-pointer shadow-xs"
+            >
+              <Search className="w-3.5 h-3.5 text-teal-400" />
+              <span>Search curriculum & formulas...</span>
+              <kbd className="ml-1 px-1.5 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-400 font-mono">
+                ⌘K
+              </kbd>
+            </button>
+
             <PWAInstallButton variant="header" />
-            <span className="text-slate-400 font-mono text-[11px] hidden lg:inline">
-              Active Term: <strong className="text-teal-400 font-normal">Fall 2024 / Spring 2026</strong>
-            </span>
+
             <a
               href="https://discord.gg/p6hkRbzFTn"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 hover:text-indigo-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 hover:text-indigo-100 hover:bg-indigo-500/20 text-xs font-semibold flex items-center gap-1.5 transition-all"
             >
               <span>Discord</span>
-              <ExternalLink className="w-3 h-3 opacity-60" />
+              <ExternalLink className="w-3 h-3 opacity-70" />
             </a>
           </div>
         </div>

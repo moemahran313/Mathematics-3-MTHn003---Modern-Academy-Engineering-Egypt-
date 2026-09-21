@@ -1,7 +1,8 @@
 import React from 'react';
-import { BookOpen, Video, Trophy, Zap, Compass, Calculator, ExternalLink, X, Bookmark, Search, Smartphone, FileCode2 } from 'lucide-react';
+import { BookOpen, Video, Trophy, Zap, Calculator, ExternalLink, X, Bookmark, Search, Smartphone, FileCode2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PWAInstallButton } from './PWAInstallButton';
+import { PartialDiffLogo } from './PartialDiffLogo';
 
 interface SidebarProps {
   activeTab: string;
@@ -92,9 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-800/60">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                    <Compass className="w-5 h-5" />
-                  </div>
+                  <PartialDiffLogo className="w-5 h-5 text-teal-400" />
                   <div>
                     <h2 className="text-sm font-mono font-bold tracking-tight text-teal-400">
                       Math 3 Reference
@@ -104,7 +103,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-100 transition-colors"
+                  className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-100 transition-colors cursor-pointer"
                   aria-label="Close mobile menu"
                 >
                   <X className="w-4 h-4" />
@@ -189,9 +188,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Desktop Sticky Sidebar */}
       <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 overflow-y-auto shrink-0 select-none p-6 border-r transition-colors bg-slate-900 border-slate-800 text-slate-100">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20 shadow-xs">
-            <Compass className="w-6 h-6 shrink-0" />
-          </div>
+          <PartialDiffLogo className="w-6 h-6 text-teal-400" />
           <div>
             <h1 className="text-base font-extrabold tracking-tight text-slate-100">
               Math 3 Reference

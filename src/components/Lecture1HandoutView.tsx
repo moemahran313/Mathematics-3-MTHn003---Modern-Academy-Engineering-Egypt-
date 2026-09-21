@@ -3,6 +3,8 @@ import {
   BookOpen,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Layers,
   Lightbulb,
   Sparkles,
@@ -12,6 +14,8 @@ import {
   FileSpreadsheet,
   Calendar,
   GraduationCap,
+  ArrowLeft,
+  ArrowRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { LECTURE_1_PAGES } from '../data/lecture1Data';
@@ -36,6 +40,90 @@ export const ALL_LECTURE_PAGES: LecturePage[] = [
   ...LECTURE_7_PAGES,
   ...LECTURE_8_PAGES,
   ...LECTURE_9_PAGES,
+];
+
+interface LectureMeta {
+  num: number;
+  label: string;
+  fullTitle: string;
+  arabicTitle: string;
+  pageRange: string;
+  pages: LecturePage[];
+}
+
+const LECTURE_CATALOG: LectureMeta[] = [
+  {
+    num: 1,
+    label: 'L1: Foundations & Separable',
+    fullTitle: 'Foundations, Separable & Homogeneous ODEs',
+    arabicTitle: 'المحاضرة الأولى: الرتبة والدرجة والخطية، وفصل المتغيرات والمتجانسة',
+    pageRange: 'Pages 1–4',
+    pages: LECTURE_1_PAGES,
+  },
+  {
+    num: 2,
+    label: 'L2: Exact & Bernoulli',
+    fullTitle: 'Exact, Linear, and Bernoulli Differential Equations',
+    arabicTitle: 'المحاضرة الثانية: المعادلات التامة (Exact)، والخطية (Linear)، ومعادلة برنولي (Bernoulli)',
+    pageRange: 'Pages 5–7',
+    pages: LECTURE_2_PAGES,
+  },
+  {
+    num: 3,
+    label: 'L3: Higher-Order ODEs',
+    fullTitle: 'Higher-Order Homogeneous ODEs & Reduction of Order',
+    arabicTitle: 'المحاضرة الثالثة: معادلات الرتب العليا المتجانسة وتخفيض الرتبة (Reduction of Order)',
+    pageRange: 'Pages 8–11',
+    pages: LECTURE_3_PAGES,
+  },
+  {
+    num: 4,
+    label: 'L4: Undetermined Coeffs',
+    fullTitle: 'Non-Homogeneous ODEs & Undetermined Coefficients',
+    arabicTitle: 'المحاضرة الرابعة: المعادلات غير المتجانسة، والمعاملات غير المحددة، وقاعدة التعديل والضرب في x',
+    pageRange: 'Pages 12–14',
+    pages: LECTURE_4_PAGES,
+  },
+  {
+    num: 5,
+    label: 'L5: Variation & Euler',
+    fullTitle: 'Variation of Parameters & Euler-Cauchy ODEs',
+    arabicTitle: 'المحاضرة الخامسة: طريقة تغير الثوابت (لاجرانج)، ومعادلة أويلر والمؤثر التفاضلي θ',
+    pageRange: 'Pages 15–18',
+    pages: LECTURE_5_PAGES,
+  },
+  {
+    num: 6,
+    label: 'L6: Laplace (Shifting I)',
+    fullTitle: 'Laplace Transforms, First Shifting Theorem & Completing Square',
+    arabicTitle: 'المحاضرة السادسة: تحويل لابلاس، الدوال المثلثية والزائدية، ونظرية الإزاحة الأولى وإكمال المربع',
+    pageRange: 'Pages 19–21',
+    pages: LECTURE_6_PAGES,
+  },
+  {
+    num: 7,
+    label: 'L7: Heaviside & Shifting II',
+    fullTitle: 'Second Shifting Theorem, Heaviside Functions & Integrals / s',
+    arabicTitle: 'المحاضرة السابعة: نظرية الإزاحة الثانية، دالة الخطوة لـ هيفيزيد، وتحويل لابلاس للتكاملات والقسمة على s',
+    pageRange: 'Pages 22–25',
+    pages: LECTURE_7_PAGES,
+  },
+  {
+    num: 8,
+    label: 'L8: Transform Calculus',
+    fullTitle: 'Differentiation & Integration of Transforms, Log Inversion & ODEs',
+    arabicTitle: 'المحاضرة الثامنة: تفاضل وتكامل تحويل لابلاس (الضرب والقسمة على t)، وتريك معكوس اللوغاريتمات، وحل المعادلات التفاضلية',
+    pageRange: 'Pages 26–29',
+    pages: LECTURE_8_PAGES,
+  },
+  {
+    num: 9,
+    label: 'L9: Fourier Series',
+    fullTitle: 'Fourier Series Foundations, Parity Symmetry & Half-Range Expansions',
+    arabicTitle: 'المحاضرة التاسعة: متسلسلات فورييه (Fourier Series)، الدوال الزوجية والفردية، ومتسلسلات نصف المدى (Sine & Cosine Series)',
+    pageRange: 'Pages 30–33',
+    pages: LECTURE_9_PAGES,
+  },
 ];
 
 export const LectureHandoutView: React.FC = () => {
@@ -113,26 +201,27 @@ export const LectureHandoutView: React.FC = () => {
     setExpandedExamples((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const currentLecturePages =
-    selectedLecture === 1
-      ? LECTURE_1_PAGES
-      : selectedLecture === 2
-      ? LECTURE_2_PAGES
-      : selectedLecture === 3
-      ? LECTURE_3_PAGES
-      : selectedLecture === 4
-      ? LECTURE_4_PAGES
-      : selectedLecture === 5
-      ? LECTURE_5_PAGES
-      : selectedLecture === 6
-      ? LECTURE_6_PAGES
-      : selectedLecture === 7
-      ? LECTURE_7_PAGES
-      : selectedLecture === 8
-      ? LECTURE_8_PAGES
-      : selectedLecture === 9
-      ? LECTURE_9_PAGES
-      : ALL_LECTURE_PAGES;
+  const goToLecture = (lectureNum: number | 'all') => {
+    setSelectedLecture(lectureNum as any);
+    setSelectedPageNumber('all');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const activeMeta = selectedLecture === 'all'
+    ? null
+    : LECTURE_CATALOG.find((l) => l.num === selectedLecture);
+
+  const currentLectureNumber = typeof selectedLecture === 'number' ? selectedLecture : null;
+  const prevLectureNumber = currentLectureNumber && currentLectureNumber > 1 ? currentLectureNumber - 1 : null;
+  const nextLectureNumber = currentLectureNumber && currentLectureNumber < 9
+    ? currentLectureNumber + 1
+    : selectedLecture === 'all'
+    ? 1
+    : null;
+
+  const currentLecturePages = selectedLecture === 'all'
+    ? ALL_LECTURE_PAGES
+    : activeMeta?.pages || ALL_LECTURE_PAGES;
 
   const pagesToDisplay =
     selectedPageNumber === 'all'
@@ -140,271 +229,152 @@ export const LectureHandoutView: React.FC = () => {
       : currentLecturePages.filter((p) => p.pageNumber === selectedPageNumber);
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Top Banner & Lecture Selector */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-teal-950/80 via-slate-900 to-indigo-950/80 border border-teal-500/30 shadow-xl space-y-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-teal-400/20 text-teal-300 border border-teal-400/40 flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {selectedLecture === 1
-                  ? 'WEEK 1 • LECTURE 1'
-                  : selectedLecture === 2
-                  ? 'WEEK 2 • LECTURE 2'
-                  : selectedLecture === 3
-                  ? 'WEEK 3 • LECTURE 3'
-                  : selectedLecture === 4
-                  ? 'WEEK 4 • LECTURE 4'
-                  : selectedLecture === 5
-                  ? 'WEEK 5 • LECTURE 5'
-                  : selectedLecture === 6
-                  ? 'WEEK 6 • LECTURE 6'
-                  : selectedLecture === 7
-                  ? 'WEEK 7 • LECTURE 7'
-                  : selectedLecture === 8
-                  ? 'WEEK 8 • LECTURE 8'
-                  : selectedLecture === 9
-                  ? 'WEEK 9 • LECTURE 9 (NEW)'
-                  : 'WEEKS 1 TO 9 • ALL LECTURES'}
+    <div className="space-y-6 animate-fadeIn pb-16 sm:pb-6">
+      {/* 1. Sleek Horizontal Lecture Switcher Bar */}
+      <div className="p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-sm overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1.5 min-w-max">
+          <button
+            onClick={() => goToLecture('all')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              selectedLecture === 'all'
+                ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+            }`}
+          >
+            <span>All Lectures (33)</span>
+          </button>
+
+          {LECTURE_CATALOG.map((lec) => (
+            <button
+              key={lec.num}
+              onClick={() => goToLecture(lec.num as any)}
+              className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                selectedLecture === lec.num
+                  ? 'bg-teal-500 text-slate-950 shadow-md font-extrabold'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`}
+            >
+              <span>{lec.label}</span>
+              {lec.num === 9 && selectedLecture !== 9 && (
+                <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-teal-400/20 text-teal-300 border border-teal-400/40">
+                  New
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 2. Focused Lecture Details Card with Quick Prev / Next Arrows */}
+      <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900/95 to-slate-950 border border-slate-800 shadow-md space-y-5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800/70">
+          <div className="space-y-2 flex-1">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold bg-teal-500/10 text-teal-300 border border-teal-500/30 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
+                {selectedLecture === 'all'
+                  ? 'FULL CURRICULUM • WEEKS 1 TO 9'
+                  : `WEEK ${activeMeta?.num} • ${activeMeta?.pageRange}`}
               </span>
-              <span
-                className="px-2.5 py-0.5 rounded-full text-[10px] font-sans text-amber-300 bg-amber-400/10 border border-amber-400/30"
-                dir="rtl"
-              >
-                {selectedLecture === 1
-                  ? 'المحاضرة الأولى: الرتبة والدرجة والخطية، وفصل المتغيرات والمتجانسة'
-                  : selectedLecture === 2
-                  ? 'المحاضرة الثانية: المعادلات التامة (Exact)، والخطية (Linear)، ومعادلة برنولي (Bernoulli)'
-                  : selectedLecture === 3
-                  ? 'المحاضرة الثالثة: معادلات الرتب العليا المتجانسة وتخفيض الرتبة (Reduction of Order)'
-                  : selectedLecture === 4
-                  ? 'المحاضرة الرابعة: المعادلات غير المتجانسة، والمعاملات غير المحددة، وقاعدة التعديل والضرب في x'
-                  : selectedLecture === 5
-                  ? 'المحاضرة الخامسة: طريقة تغير الثوابت (لاجرانج)، ومعادلة أويلر والمؤثر التفاضلي θ'
-                  : selectedLecture === 6
-                  ? 'المحاضرة السادسة: تحويل لابلاس، الدوال المثلثية والزائدية، ونظرية الإزاحة الأولى وإكمال المربع'
-                  : selectedLecture === 7
-                  ? 'المحاضرة السابعة: نظرية الإزاحة الثانية، دالة الخطوة لـ هيفيزيد، وتحويل لابلاس للتكاملات والقسمة على s'
-                  : selectedLecture === 8
-                  ? 'المحاضرة الثامنة: تفاضل وتكامل تحويل لابلاس (الضرب والقسمة على t)، وتريك معكوس اللوغاريتمات، وحل المعادلات التفاضلية'
-                  : selectedLecture === 9
-                  ? 'المحاضرة التاسعة: متسلسلات فورييه (Fourier Series)، الدوال الزوجية والفردية، ومتسلسلات نصف المدى (Sine & Cosine Series)'
-                  : 'سجل المحاضرات الكامل: الأسابيع ١، ٢، ٣، ٤، ٥، ٦، ٧، ٨ و ٩ (٣٣ صفحة شاملة)'}
+
+              <span className="text-[11px] font-mono text-slate-400">
+                {selectedLecture === 'all'
+                  ? '33 Transcribed Pages'
+                  : `${activeMeta?.pages.length} Solved Pages`}
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight flex items-center gap-2">
-              <GraduationCap className="w-6 h-6 text-teal-400" />
+
+            <h2 className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight flex items-center gap-2.5">
+              <GraduationCap className="w-6 h-6 text-teal-400 shrink-0" />
               <span>
-                {selectedLecture === 1
-                  ? 'Lecture 1: Foundations, Separable & Homogeneous ODEs'
-                  : selectedLecture === 2
-                  ? 'Lecture 2: Exact, Linear, and Bernoulli Differential Equations'
-                  : selectedLecture === 3
-                  ? 'Lecture 3: Higher-Order Homogeneous ODEs & Reduction of Order'
-                  : selectedLecture === 4
-                  ? 'Lecture 4: Non-Homogeneous ODEs & Undetermined Coefficients'
-                  : selectedLecture === 5
-                  ? 'Lecture 5: Variation of Parameters & Euler-Cauchy ODEs'
-                  : selectedLecture === 6
-                  ? 'Lecture 6: Laplace Transforms, First Shifting Theorem & Completing the Square'
-                  : selectedLecture === 7
-                  ? 'Lecture 7: Second Shifting Theorem, Heaviside Step Functions & Integrals Division by s'
-                  : selectedLecture === 8
-                  ? 'Lecture 8: Differentiation & Integration of Laplace Transforms, Log Inversion Tricks & ODEs'
-                  : selectedLecture === 9
-                  ? 'Lecture 9: Fourier Series Foundations, Parity Symmetry & Half-Range Sine/Cosine Expansions'
-                  : 'Complete Lecture Handouts & Laws Reference (Lectures 1 to 9)'}
+                {selectedLecture === 'all'
+                  ? 'Complete Lecture Handouts & Formula Notebook (Lectures 1–9)'
+                  : `Lecture ${activeMeta?.num}: ${activeMeta?.fullTitle}`}
               </span>
             </h2>
-            <p className="text-xs text-slate-400 font-sans max-w-3xl leading-relaxed">
-              Complete transcribed reference directly from your handwritten notebook pages, featuring exact mathematical laws, Arabic explanations, Euler-Fourier coefficient integrals, even/odd parity simplifications, tabular integration by parts, and half-range Sine & Cosine series.
+
+            <p
+              className="text-xs sm:text-sm text-amber-300/90 font-sans leading-relaxed pt-0.5"
+              dir="rtl"
+            >
+              {selectedLecture === 'all'
+                ? 'سجل المحاضرات الشامل لمادة الرياضيات ٣ (من المحاضرة ١ إلى المحاضرة ٩) شاملاً القوانين والشروحات والأمثلة المحلولة.'
+                : activeMeta?.arabicTitle}
             </p>
           </div>
 
-          {/* Lecture Switcher Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 bg-slate-950/90 p-1.5 rounded-xl border border-slate-800 shrink-0 flex-wrap">
+          {/* Quick Prev / Next Lecture Switcher Buttons in Header */}
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
             <button
-              onClick={() => {
-                setSelectedLecture(1);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 1
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
+              onClick={() => prevLectureNumber && goToLecture(prevLectureNumber)}
+              disabled={!prevLectureNumber}
+              aria-label="Previous Lecture"
+              className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all border ${
+                prevLectureNumber
+                  ? 'bg-slate-950 border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 text-slate-200 cursor-pointer shadow-xs active:scale-95'
+                  : 'bg-slate-950/40 border-slate-850 text-slate-600 cursor-not-allowed opacity-40'
               }`}
             >
-              <span>L1 (1-4)</span>
+              <ChevronLeft className="w-4 h-4 text-teal-400" />
+              <span>Prev Lecture</span>
+              {prevLectureNumber && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-400/10 text-teal-300 font-mono">
+                  L{prevLectureNumber}
+                </span>
+              )}
             </button>
+
             <button
-              onClick={() => {
-                setSelectedLecture(2);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 2
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
+              onClick={() => nextLectureNumber && goToLecture(nextLectureNumber)}
+              disabled={!nextLectureNumber}
+              aria-label="Next Lecture"
+              className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-mono font-bold transition-all border ${
+                nextLectureNumber
+                  ? 'bg-slate-950 border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 text-slate-200 cursor-pointer shadow-xs active:scale-95'
+                  : 'bg-slate-950/40 border-slate-850 text-slate-600 cursor-not-allowed opacity-40'
               }`}
             >
-              <span>L2 (5-7)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture(3);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 3
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>L3 (8-11)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture(4);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 4
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>L4 (12-14)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture(5);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 5
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>L5 (15-18)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture(6);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 6
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>L6 (19-21)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture(7);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 7
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>L7 (22-25)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture(8);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 8
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>L8 (26-29)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture(9);
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 9
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>L9 (30-33)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedLecture('all');
-                setSelectedPageNumber('all');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                selectedLecture === 'all'
-                  ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <span>All 33</span>
+              <span>Next Lecture</span>
+              {nextLectureNumber && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-400/10 text-teal-300 font-mono">
+                  L{nextLectureNumber}
+                </span>
+              )}
+              <ChevronRight className="w-4 h-4 text-teal-400" />
             </button>
           </div>
         </div>
 
-        {/* Page Filter Tabs */}
-        <div className="flex items-center gap-1.5 pt-2 border-t border-slate-800/80 overflow-x-auto no-scrollbar">
-          <span className="text-[11px] font-mono text-slate-400 font-bold uppercase mr-1">
+        {/* 3. Page Jumper Navigation */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
+          <span className="text-xs font-mono text-slate-400 font-bold uppercase shrink-0 mr-1">
             Jump to Page:
           </span>
+
           <button
             onClick={() => setSelectedPageNumber('all')}
-            className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer shrink-0 ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
               selectedPageNumber === 'all'
-                ? 'bg-teal-400/20 text-teal-300 border border-teal-400/50'
-                : 'text-slate-400 hover:text-slate-200 bg-slate-950 border border-slate-800'
+                ? 'bg-teal-500/20 text-teal-300 border border-teal-500/50 shadow-xs'
+                : 'text-slate-400 hover:text-slate-200 bg-slate-950/80 border border-slate-800'
             }`}
           >
-            All Pages
+            All Pages ({currentLecturePages.length})
           </button>
-          {currentLecturePages.map((p) => {
-            const pageWeekLabel =
-              p.pageNumber <= 4
-                ? 'W1'
-                : p.pageNumber <= 7
-                ? 'W2'
-                : p.pageNumber <= 11
-                ? 'W3'
-                : p.pageNumber <= 14
-                ? 'W4'
-                : p.pageNumber <= 18
-                ? 'W5'
-                : p.pageNumber <= 21
-                ? 'W6'
-                : p.pageNumber <= 25
-                ? 'W7'
-                : p.pageNumber <= 29
-                ? 'W8'
-                : 'W9';
-            return (
-              <button
-                key={p.pageNumber}
-                onClick={() => setSelectedPageNumber(p.pageNumber)}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold transition-all cursor-pointer shrink-0 ${
-                  selectedPageNumber === p.pageNumber
-                    ? 'bg-teal-400/20 text-teal-300 border border-teal-400/50'
-                    : 'text-slate-400 hover:text-slate-200 bg-slate-950 border border-slate-800'
-                }`}
-              >
-                Page [{p.pageNumber}] ({pageWeekLabel})
-              </button>
-            );
-          })}
+
+          {currentLecturePages.map((p) => (
+            <button
+              key={p.pageNumber}
+              onClick={() => setSelectedPageNumber(p.pageNumber)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
+                selectedPageNumber === p.pageNumber
+                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/50 shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 bg-slate-950/80 border border-slate-800'
+              }`}
+            >
+              Page {p.pageNumber}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -733,6 +703,97 @@ export const LectureHandoutView: React.FC = () => {
           </div>
           );
         })}
+      </div>
+
+      {/* 4. Bottom Lecture Progression / Next Lecture Transition Card */}
+      <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 shadow-lg flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        {prevLectureNumber ? (
+          <button
+            onClick={() => goToLecture(prevLectureNumber)}
+            className="flex-1 flex items-center justify-start gap-3 p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 text-left transition-all cursor-pointer group"
+          >
+            <div className="w-9 h-9 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:bg-teal-500 group-hover:text-slate-950 transition-colors shrink-0">
+              <ArrowLeft className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-mono uppercase text-slate-500 block">Previous Lecture</span>
+              <span className="text-xs font-bold text-slate-200 group-hover:text-teal-300 truncate block">
+                Lecture {prevLectureNumber}: {LECTURE_CATALOG[prevLectureNumber - 1]?.fullTitle}
+              </span>
+            </div>
+          </button>
+        ) : (
+          <div className="flex-1 hidden sm:block" />
+        )}
+
+        {nextLectureNumber ? (
+          <button
+            onClick={() => goToLecture(nextLectureNumber)}
+            className="flex-1 flex items-center justify-end gap-3 p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 text-right transition-all cursor-pointer group"
+          >
+            <div className="min-w-0">
+              <span className="text-[10px] font-mono uppercase text-slate-500 block">Next Lecture</span>
+              <span className="text-xs font-bold text-slate-200 group-hover:text-teal-300 truncate block">
+                Lecture {nextLectureNumber}: {LECTURE_CATALOG[nextLectureNumber - 1]?.fullTitle}
+              </span>
+            </div>
+            <div className="w-9 h-9 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:bg-teal-500 group-hover:text-slate-950 transition-colors shrink-0">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </button>
+        ) : (
+          <button
+            onClick={() => goToLecture(1)}
+            className="flex-1 flex items-center justify-end gap-3 p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-teal-500/50 hover:bg-slate-900 text-right transition-all cursor-pointer group"
+          >
+            <div className="min-w-0">
+              <span className="text-[10px] font-mono uppercase text-slate-500 block">All 9 Lectures Completed</span>
+              <span className="text-xs font-bold text-slate-200 group-hover:text-teal-300 truncate block">
+                Return to Lecture 1 (Week 1)
+              </span>
+            </div>
+            <div className="w-9 h-9 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:bg-teal-500 group-hover:text-slate-950 transition-colors shrink-0">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </button>
+        )}
+      </div>
+
+      {/* 5. Floating Quick Navigation Bar for Mobile Phones */}
+      <div className="sm:hidden fixed bottom-3 left-3 right-3 z-30 flex items-center justify-between gap-2 p-2 rounded-2xl bg-slate-950/90 backdrop-blur-md border border-slate-800 shadow-2xl">
+        <button
+          onClick={() => prevLectureNumber && goToLecture(prevLectureNumber)}
+          disabled={!prevLectureNumber}
+          aria-label="Previous Lecture"
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs font-bold font-mono transition-all ${
+            prevLectureNumber
+              ? 'bg-slate-900 border border-slate-700 text-slate-200 active:scale-95 text-teal-300'
+              : 'bg-slate-950/50 border border-slate-900 text-slate-600 opacity-40 cursor-not-allowed'
+          }`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>Prev</span>
+          {prevLectureNumber && <span>(L{prevLectureNumber})</span>}
+        </button>
+
+        <span className="px-2 py-1 text-[11px] font-mono text-slate-400 font-bold">
+          {selectedLecture === 'all' ? 'All (33)' : `L${selectedLecture}/9`}
+        </span>
+
+        <button
+          onClick={() => nextLectureNumber && goToLecture(nextLectureNumber)}
+          disabled={!nextLectureNumber}
+          aria-label="Next Lecture"
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-xs font-bold font-mono transition-all ${
+            nextLectureNumber
+              ? 'bg-teal-500 text-slate-950 font-black shadow-md active:scale-95'
+              : 'bg-slate-950/50 border border-slate-900 text-slate-600 opacity-40 cursor-not-allowed'
+          }`}
+        >
+          <span>Next</span>
+          {nextLectureNumber && <span>(L{nextLectureNumber})</span>}
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
