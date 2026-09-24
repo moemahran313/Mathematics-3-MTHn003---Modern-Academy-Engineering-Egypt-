@@ -57,10 +57,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'videos',
-      label: 'Video Explanations',
+      label: 'شروحات الفيديو (Videos)',
       icon: Video,
-      iconColor: 'text-red-400',
-      badge: 'Course Deck',
+      iconColor: 'text-rose-400',
+      badge: 'د. أشرف وم. سمير',
     },
     {
       id: 'solver',
