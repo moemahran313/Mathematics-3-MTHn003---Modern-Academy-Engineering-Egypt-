@@ -95,10 +95,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div className="flex items-center gap-2.5">
                   <PartialDiffLogo className="w-5 h-5 text-teal-400" />
                   <div>
-                    <h2 className="text-sm font-mono font-bold tracking-tight text-teal-400">
+                    <h2 className="text-sm font-mono font-bold tracking-tight text-slate-100">
                       Math 3 Reference
                     </h2>
-                    <span className="text-[10px] text-slate-400 font-mono">Modern Academy</span>
+                    <span className="text-[10px] text-teal-400 font-mono font-semibold block">
+                      Muhammad Mahran
+                    </span>
                   </div>
                 </div>
                 <button
@@ -187,15 +189,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Desktop Sticky Sidebar */}
       <aside className="hidden md:flex flex-col w-72 h-screen sticky top-0 overflow-y-auto shrink-0 select-none p-6 border-r transition-colors bg-slate-900 border-slate-800 text-slate-100">
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-5">
           <PartialDiffLogo className="w-6 h-6 text-teal-400" />
           <div>
             <h1 className="text-base font-extrabold tracking-tight text-slate-100">
               Math 3 Reference
             </h1>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-teal-400/10 text-teal-400 border border-teal-400/20 font-mono font-bold uppercase tracking-wider inline-block mt-1">
-              ODE & Transforms
-            </span>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-xs font-semibold text-teal-400 font-mono">
+                Muhammad Mahran
+              </span>
+              <span className="text-slate-600 text-[10px]">•</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-teal-400/10 text-teal-300 border border-teal-400/20 font-mono font-bold">
+                ODE & Transforms
+              </span>
+            </div>
           </div>
         </div>
 

@@ -65,8 +65,8 @@ export const PartialDiffLogo: React.FC<PartialDiffLogoProps> = ({
               </span>
             )}
           </div>
-          <span className="text-[10px] text-slate-400 font-mono block">
-            Differential Equations & Transforms
+          <span className="text-[10px] text-teal-400 font-mono font-semibold block">
+            Muhammad Mahran
           </span>
         </div>
       )}

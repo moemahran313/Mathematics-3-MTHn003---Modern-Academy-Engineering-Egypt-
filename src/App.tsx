@@ -92,10 +92,15 @@ export default function App() {
               <Menu className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <PartialDiffLogo className="w-4 h-4 text-teal-400" />
-              <span className="text-xs font-mono font-extrabold text-slate-100 tracking-tight">
-                Math 3
-              </span>
+              <PartialDiffLogo className="w-5 h-5 text-teal-400" />
+              <div>
+                <span className="text-xs font-mono font-extrabold text-slate-100 tracking-tight block leading-tight">
+                  Math 3
+                </span>
+                <span className="text-[9px] font-mono text-teal-400 font-semibold block leading-tight">
+                  Muhammad Mahran
+                </span>
+              </div>
             </div>
           </div>
 
