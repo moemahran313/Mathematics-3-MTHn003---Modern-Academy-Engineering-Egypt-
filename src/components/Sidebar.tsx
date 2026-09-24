@@ -64,10 +64,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'solver',
-      label: 'DE Solver & Tables',
+      label: 'LaTeX ODE Solver',
       icon: Calculator,
-      iconColor: 'text-cyan-400',
-      badge: 'Interactive',
+      iconColor: 'text-teal-400',
+      badge: 'Step-by-Step',
     },
   ];
 

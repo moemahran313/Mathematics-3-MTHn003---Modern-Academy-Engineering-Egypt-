@@ -278,11 +278,20 @@ export default function App() {
           <button
             onClick={() => setActiveTab('videos')}
             className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
-              activeTab === 'videos' ? 'text-red-400 font-extrabold' : 'text-slate-400'
+              activeTab === 'videos' ? 'text-rose-400 font-extrabold' : 'text-slate-400'
             }`}
           >
             <Video className="w-4 h-4" />
             <span>Videos</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('solver')}
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'solver' ? 'text-teal-400 font-extrabold' : 'text-slate-400'
+            }`}
+          >
+            <Calculator className="w-4 h-4" />
+            <span>DE Solver</span>
           </button>
         </div>
       </div>
