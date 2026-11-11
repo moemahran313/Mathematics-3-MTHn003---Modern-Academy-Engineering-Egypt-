@@ -16,6 +16,7 @@ import { Sidebar } from './components/Sidebar';
 import { LibraryView } from './components/LibraryView';
 import { VideosView } from './components/VideosView';
 import { ExamsView } from './components/ExamsView';
+import { QuestionBankView } from './components/QuestionBankView';
 import { QuizArenaView } from './components/QuizArenaView';
 import { SolverView } from './components/SolverView';
 import { GlossaryView } from './components/GlossaryView';
@@ -27,10 +28,11 @@ import { PartialDiffLogo } from './components/PartialDiffLogo';
 import { Category } from './types';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('library');
+  const [activeTab, setActiveTab] = useState<string>('exams');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [selectedTopicCategory, setSelectedTopicCategory] = useState<Category | undefined>(undefined);
+  const [selectedBankQuestionId, setSelectedBankQuestionId] = useState<string | undefined>(undefined);
 
   // Global keyboard listener for search (Cmd+K, Ctrl+K, /)
   useEffect(() => {
@@ -95,10 +97,10 @@ export default function App() {
               <PartialDiffLogo className="w-5 h-5 text-teal-400" />
               <div>
                 <span className="text-xs font-mono font-extrabold text-slate-100 tracking-tight block leading-tight">
-                  Math 3
+                  Math 3 Reference
                 </span>
                 <span className="text-[9px] font-mono text-teal-400 font-semibold block leading-tight">
-                  Muhammad Mahran
+                  MTH203 · MTHn103
                 </span>
               </div>
             </div>
@@ -128,15 +130,11 @@ export default function App() {
         {/* Desktop Top Header Bar */}
         <div className="hidden md:flex items-center justify-between px-8 py-3.5 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md text-xs">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
-            </span>
             <span className="font-mono font-medium text-slate-300">
               Modern Academy Curriculum
             </span>
-            <span className="text-slate-600 font-mono">•</span>
-            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[11px] font-mono text-teal-400 font-semibold">
+            <span className="text-slate-600 font-mono">·</span>
+            <span className="font-mono text-teal-400 font-semibold">
               MTH203 / MTHn103
             </span>
           </div>
@@ -211,7 +209,18 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'exams' && <ExamsView />}
+          {activeTab === 'exams' && (
+            <ExamsView
+              onOpenQuestionBank={(qId) => {
+                if (qId) setSelectedBankQuestionId(qId);
+                setActiveTab('question_bank');
+              }}
+            />
+          )}
+
+          {activeTab === 'question_bank' && (
+            <QuestionBankView initialFilterId={selectedBankQuestionId} />
+          )}
 
           {activeTab === 'videos' && <VideosView />}
 
@@ -231,6 +240,24 @@ export default function App() {
         {/* Mobile Bottom Navigation Bar */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 px-1 py-1 flex items-center justify-around overflow-x-auto no-scrollbar">
           <button
+            onClick={() => setActiveTab('exams')}
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'exams' ? 'text-amber-400 font-extrabold' : 'text-slate-400'
+            }`}
+          >
+            <Trophy className="w-4 h-4" />
+            <span>Exam Lab</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('question_bank')}
+            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
+              activeTab === 'question_bank' ? 'text-teal-400 font-extrabold' : 'text-slate-400'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>58 Q-Bank</span>
+          </button>
+          <button
             onClick={() => setActiveTab('library')}
             className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
               activeTab === 'library' ? 'text-teal-400 font-extrabold' : 'text-slate-400'
@@ -249,15 +276,6 @@ export default function App() {
             <span>Formulas</span>
           </button>
           <button
-            onClick={() => setActiveTab('glossary')}
-            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
-              activeTab === 'glossary' ? 'text-indigo-400 font-extrabold' : 'text-slate-400'
-            }`}
-          >
-            <Bookmark className="w-4 h-4" />
-            <span>Glossary</span>
-          </button>
-          <button
             onClick={() => setActiveTab('quiz')}
             className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
               activeTab === 'quiz' ? 'text-emerald-400 font-extrabold' : 'text-slate-400'
@@ -265,15 +283,6 @@ export default function App() {
           >
             <Zap className="w-4 h-4" />
             <span>Quizzes</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('exams')}
-            className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-[9px] font-bold shrink-0 ${
-              activeTab === 'exams' ? 'text-amber-400 font-extrabold' : 'text-slate-400'
-            }`}
-          >
-            <Trophy className="w-4 h-4" />
-            <span>Exams</span>
           </button>
           <button
             onClick={() => setActiveTab('videos')}

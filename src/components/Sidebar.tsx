@@ -50,10 +50,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'exams',
-      label: 'Final & Midterm Exams',
+      label: 'Zero-to-Hero Exam Lab',
       icon: Trophy,
       iconColor: 'text-amber-400',
-      badge: '2016-2024',
+      badge: '30-Min Mastery',
+    },
+    {
+      id: 'question_bank',
+      label: 'Question Bank (58 Qs)',
+      icon: BookOpen,
+      iconColor: 'text-teal-400',
+      badge: 'Step-by-Step',
     },
     {
       id: 'videos',
