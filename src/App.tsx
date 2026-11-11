@@ -33,6 +33,7 @@ export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [selectedTopicCategory, setSelectedTopicCategory] = useState<Category | undefined>(undefined);
   const [selectedBankQuestionId, setSelectedBankQuestionId] = useState<string | undefined>(undefined);
+  const [selectedBankPreset, setSelectedBankPreset] = useState<'All' | 'Golden12' | 'WeakSpots'>('All');
 
   // Global keyboard listener for search (Cmd+K, Ctrl+K, /)
   useEffect(() => {
@@ -211,15 +212,19 @@ export default function App() {
 
           {activeTab === 'exams' && (
             <ExamsView
-              onOpenQuestionBank={(qId) => {
+              onOpenQuestionBank={(qId, preset) => {
                 if (qId) setSelectedBankQuestionId(qId);
+                if (preset) setSelectedBankPreset(preset);
                 setActiveTab('question_bank');
               }}
             />
           )}
 
           {activeTab === 'question_bank' && (
-            <QuestionBankView initialFilterId={selectedBankQuestionId} />
+            <QuestionBankView
+              initialFilterId={selectedBankQuestionId}
+              initialPresetFilter={selectedBankPreset}
+            />
           )}
 
           {activeTab === 'videos' && <VideosView />}

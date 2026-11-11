@@ -4131,3 +4131,161 @@ export const MASTER_EXAM_QUESTIONS: MasterExamQuestion[] = [
     }
   }
 ];
+
+// ============================================================================
+// THE 12 GOLDEN EXAM QUESTIONS (45-MINUTE EMERGENCY PLAYLIST)
+// Covers 100% of every exam archetype and trick without repetition
+// ============================================================================
+export const GOLDEN_12_QUESTION_IDS: string[] = [
+  'f24-q1a',   // #1: Separable sec(y) + x^2/cos(y) + compound exponent e^(2-y)
+  'f25-q1a',   // #2: Separable e^(2x - y^2) with [1/2] missing derivative box trick
+  'f20-q1b',   // #3: Reducible to Separable z = x + y with -1 cancellation
+  'f21-q1c',   // #4: Homogeneous disguised logarithm ln(y) - ln(x) = ln(y/x)
+  'f25-q1c',   // #5: Non-Exact ODE with integrating factor μ(x) = e^x + Strike-Out Duplicate
+  's27-fo-14', // #6: Non-Exact ODE with integrating factor in y: μ(y) = y^2
+  'f23-q1d',   // #7: Bernoulli P*, Q* shortcut + 3-row Tabular Integration by Parts box
+  'f25-q2a',   // #8: 6th-Order Homogeneous ODE with m^3 = 0 triple root + synthetic division
+  's27-ho-9',  // #9: Undetermined Coefficients double-angle trig trap (2cos^2 x = 1 + cos 2x)
+  's27-ho-12', // #10: Undetermined Coefficients missing-y resonance boost (y'' + y' = 2x + 3e^x)
+  'f23-q2c',   // #11: Reduction of Order given y_1 = x (x^2 y'' + xy' - y = x)
+  'f25-q2b-1', // #12: RLC & Spring-Mass Physical Application (1/C = 1/0.02 = 50 repeated root)
+];
+
+export interface DecisionTreeNode {
+  id: string;
+  stepNumber: number;
+  orderGroup: 'First-Order ODE (Q1)' | 'Higher-Order ODE (Q2)';
+  ifYouSeeTitle: string;
+  arabicIfYouSee: string;
+  visualPatternLatex: string;
+  instantTestLatex: string;
+  doThisAction: string;
+  arabicDoThis: string;
+  solutionFormulaLatex: string;
+  killerTrapWarning: string;
+  sampleQuestionId: string;
+  sampleEquationLatex: string;
+}
+
+export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
+  {
+    id: 'dt-1-separable',
+    stepNumber: 1,
+    orderGroup: 'First-Order ODE (Q1)',
+    ifYouSeeTitle: 'IF YOU SEE: Compound Exponents OR sec(y) + xⁿ / cos(y)',
+    arabicIfYouSee: 'إذا رأيت: أس مركب مثل e^{2x-y²} أو مجموع sec(y) مع 1/cos(y)',
+    visualPatternLatex: "e^{ax + by}, \\quad \\sec(y) + \\frac{x^n}{\\cos(y)}, \\quad \\text{or} \\quad f(x)g(y)y' = h(x)k(y)",
+    instantTestLatex: "e^{a+b} = e^a \\cdot e^b, \\quad \\frac{1}{\\cos y} = \\sec y \\implies \\sec y(1 + x^n)",
+    doThisAction: 'DO THIS: Split the exponent, factor out sec(y), put all y terms with dy on the left, and all x terms with dx on the right.',
+    arabicDoThis: 'افصل الأس المركب، اسحب sec(y) كعامل مشترك، واجعل كل حدود y مع dy في اليسار وحدود x مع dx في اليمين.',
+    solutionFormulaLatex: "\\int g(y)\\,dy = \\int f(x)\\,dx + C",
+    killerTrapWarning: 'When moving e^{-y^2} to the other side, flip the exponent sign to e^{+y^2} and insert [1/2] ∫ 2y e^{y^2} dy!',
+    sampleQuestionId: 'f24-q1a',
+    sampleEquationLatex: "e^{-y}\\frac{dy}{dx} = e^{2-y}\\left(\\sec y + \\frac{x^2}{\\cos y}\\right)"
+  },
+  {
+    id: 'dt-2-reducible',
+    stepNumber: 2,
+    orderGroup: 'First-Order ODE (Q1)',
+    ifYouSeeTitle: 'IF YOU SEE: A Repeated Linear Block (x + y) or Parallel Lines (y + 2x)',
+    arabicIfYouSee: 'إذا رأيت: قوس خطي مكرر مثل (x + y) أو مستقيمين متوازيين (y + 2x)',
+    visualPatternLatex: "y' = (x+y)\\ln(x+y) - 1 \\quad \\text{or} \\quad y' = \\frac{1 - 2(y+2x)}{1 + (y+2x)}",
+    instantTestLatex: "z = ax + by \\implies z' = a + by'",
+    doThisAction: 'DO THIS: Substitute z = the repeated linear bracket. The constant term (-1 or -2) will cancel out and reduce it to a 1-step separable ODE!',
+    arabicDoThis: 'افرض المتغير z يساوي القوس الخطي المكرر (مثل z = x + y)، سيختصر الرقم الثابت وتتحول إلى فصل متغيرات فوراً.',
+    solutionFormulaLatex: "z = x + y \\implies y' = z' - 1 \\implies \\int \\frac{dz}{F(z)} = \\int dx + C",
+    killerTrapWarning: 'Never expand (x+y) or try to use integrating factors on ln(x+y)!',
+    sampleQuestionId: 'f20-q1b',
+    sampleEquationLatex: "y' = (x + y)\\ln(x + y) - 1"
+  },
+  {
+    id: 'dt-3-homogeneous',
+    stepNumber: 3,
+    orderGroup: 'First-Order ODE (Q1)',
+    ifYouSeeTitle: 'IF YOU SEE: Ratio (y/x), Log Difference (ln y - ln x), or Equal-Degree Terms',
+    arabicIfYouSee: 'إذا رأيت: الكسر (y/x)، أو (ln y - ln x)، أو حدود متساوية في مجموع الأسس',
+    visualPatternLatex: "\\cos\\left(\\frac{y}{x}\\right), \\quad e^{y/x}, \\quad \\ln y - \\ln x = \\ln\\left(\\frac{y}{x}\\right), \\quad (x^2 - xy + y^2)dx - xy\\,dy = 0",
+    instantTestLatex: "\\frac{y}{x} = u \\implies y = xu \\implies y' = xu' + u",
+    doThisAction: 'DO THIS: Replace y/x with u and y\' with x u\' + u. Watch the "+u" term automatically cancel with the other side, then separate u and x!',
+    arabicDoThis: 'عوض عن y/x بـ u وعن y\' بـ xu\' + u، ستجد أن الحد (+u) يختصر تلقائياً من الطرفين ثم افصل المتغيرات.',
+    solutionFormulaLatex: "x\\frac{du}{dx} = F(u) - u \\implies \\int \\frac{du}{F(u) - u} = \\int \\frac{dx}{x} = \\ln|x| + C",
+    killerTrapWarning: 'Don\'t forget to replace u back with (y/x) in your final boxed answer!',
+    sampleQuestionId: 'f25-q1b',
+    sampleEquationLatex: "xy' - y = x^2 e^{(y/x)}"
+  },
+  {
+    id: 'dt-4-exact',
+    stepNumber: 4,
+    orderGroup: 'First-Order ODE (Q1)',
+    ifYouSeeTitle: 'IF YOU SEE: Differential Form M(x,y) dx + N(x,y) dy = 0',
+    arabicIfYouSee: 'إذا رأيت: الصورة التفاضلية القياسية M(x,y) dx + N(x,y) dy = 0',
+    visualPatternLatex: "M(x,y)\\,dx + N(x,y)\\,dy = 0",
+    instantTestLatex: "\\text{Compute } M_y = \\frac{\\partial M}{\\partial y} \\quad \\text{and} \\quad N_x = \\frac{\\partial N}{\\partial x}",
+    doThisAction: 'DO THIS: Test M_y = N_x FIRST (takes 5 seconds!). If equal → Exact (integrate both and slash duplicates). If not equal → find μ(x) or μ(y) and multiply!',
+    arabicDoThis: 'احسب M_y و N_x أولاً دائماً! إذا تساويا فهي تامة (كامل واشطب المكرر)، وإذا اختلفا احسب عامل التكامل μ.',
+    solutionFormulaLatex: "\\text{If } M_y = N_x: \\int M\\,dx + \\int (\\text{non-duplicate } N)\\,dy = C \\quad | \\quad \\mu(x) = e^{\\int \\frac{M_y - N_x}{N}dx}, \\; \\mu(y) = e^{\\int \\frac{N_x - M_y}{M}dy}",
+    killerTrapWarning: 'In Sheet Q10, Q11, Q12, the equations look complicated or non-exact, but once moved to the LHS, M_y = N_x immediately!',
+    sampleQuestionId: 'f25-q1c',
+    sampleEquationLatex: "(xy + y^2)\\,dx + (x + 2y - 1)\\,dy = 0"
+  },
+  {
+    id: 'dt-5-linear-bernoulli',
+    stepNumber: 5,
+    orderGroup: 'First-Order ODE (Q1)',
+    ifYouSeeTitle: 'IF YOU SEE: y\' and y¹ (Linear) OR y\' and y¹ with yⁿ on RHS (Bernoulli)',
+    arabicIfYouSee: 'إذا رأيت: y\' و y أس ١ (خطية) أو معها y^n في الطرف الأيمن (برنولي)',
+    visualPatternLatex: "y' + P(x)y = Q(x) \\quad \\text{(Linear)} \\qquad \\text{or} \\qquad y' + P(x)y = Q(x)y^n \\quad \\text{(Bernoulli)}",
+    instantTestLatex: "\\text{Step 0: Divide by coefficient of } y'! \\quad \\text{For Bernoulli: } P^*(x) = (1-n)P(x), \\; Q^*(x) = (1-n)Q(x)",
+    doThisAction: 'DO THIS: Divide by whatever is in front of y\' FIRST. If Bernoulli, multiply P and Q by (1 - n), compute μ = e^{∫ P* dx}, and write y^{1-n} directly!',
+    arabicDoThis: 'اقسم على معامل y\' أولاً! وفي حالة برنولي اضرب P و Q في (1-n) واستخدم قانون الحل المباشر لـ y^{1-n}.',
+    solutionFormulaLatex: "y^{1-n} = \\frac{1}{\\mu}\\left[\\int \\mu(x)Q^*(x)\\,dx + C\\right] \\quad \\text{(for Linear, } n = 0 \\implies 1-n = 1\\text{)}",
+    killerTrapWarning: 'Never read P(x) before dividing by the leading x or sin(x) in front of y\'!',
+    sampleQuestionId: 'f23-q1d',
+    sampleEquationLatex: "y' + y = xe^{6x}y^5"
+  },
+  {
+    id: 'dt-6-higher-homog',
+    stepNumber: 6,
+    orderGroup: 'Higher-Order ODE (Q2)',
+    ifYouSeeTitle: 'IF YOU SEE: Higher Derivatives (y\'\', y\'\'\', d⁶y/dx⁶) = 0 with Constant Coeffs',
+    arabicIfYouSee: 'إذا رأيت: مشتقات عليا بمعاملات ثابتة تساوي صفراً',
+    visualPatternLatex: "a_n y^{(n)} + \\dots + a_1 y' + a_0 y = 0 \\implies a_n m^n + \\dots + a_1 m + a_0 = 0",
+    instantTestLatex: "\\text{Factor } m^k \\text{ if lower derivatives are missing! Check if } \\sum a_i = 0 \\implies m = 1 \\text{ is a root!}",
+    doThisAction: 'DO THIS: Factor out m^k first (m^3 = 0 gives C_1 + C_2 x + C_3 x^2). For cubics, test m = 1, -1, -2, 3 via synthetic division.',
+    arabicDoThis: 'اسحب أصغر أس m^k كعامل مشترك أولاً (m^3 = 0 تعطي 3 ثوابت C_1 + C_2x + C_3x^2)، ثم جرب الجذور 1, -1, -2, 3.',
+    solutionFormulaLatex: "\\text{Distinct: } C_1e^{m_1x}+C_2e^{m_2x} \\; | \\; \\text{Repeated: } (C_1+C_2x)e^{mx} \\; | \\; \\text{Complex } \\alpha\\pm i\\beta: e^{\\alpha x}(C_1\\cos\\beta x+C_2\\sin\\beta x)",
+    killerTrapWarning: 'For m^3 = 0, writing only C_1 instead of C_1 + C_2 x + C_3 x^2 loses half the marks!',
+    sampleQuestionId: 'f25-q2a',
+    sampleEquationLatex: "\\frac{d^6y}{dx^6} + 5\\frac{d^5y}{dx^5} + 9\\frac{d^4y}{dx^4} + 6\\frac{d^3y}{dx^3} = 0"
+  },
+  {
+    id: 'dt-7-undetermined',
+    stepNumber: 7,
+    orderGroup: 'Higher-Order ODE (Q2)',
+    ifYouSeeTitle: 'IF YOU SEE: Constant Coeffs with Non-Zero RHS (e^{ax}, sin/cos, Polynomials)',
+    arabicIfYouSee: 'إذا رأيت: معاملات ثابتة وطرف أيمن غير صفري (دالة أسية، مثلثية، كثيرة حدود)',
+    visualPatternLatex: "ay'' + by' + cy = G(x)",
+    instantTestLatex: "\\text{First simplify } 2\\cos^2 x = 1+\\cos 2x, \\quad \\sin 3x\\cos 3x = \\frac{1}{2}\\sin 6x, \\quad \\cos x\\tan x = \\sin x!",
+    doThisAction: 'DO THIS: Solve y_h first! Then write trial y_p. If any term in y_p duplicates a root of y_h with multiplicity r, multiply that part of y_p by x^r!',
+    arabicDoThis: 'أوجد الحل المتجانس y_h أولاً! ثم افرض y_p، وإذا تشابه الفرض مع أي حد في y_h اضرب الفرض في x (أو x^2).',
+    solutionFormulaLatex: "y = y_h + y_p",
+    killerTrapWarning: 'In y\'\' + y\' = 2x + 3e^x, the "y" term is missing so m = 0 is a root! You MUST multiply the polynomial (Ax+B) by x to get Ax^2 + Bx!',
+    sampleQuestionId: 's27-ho-12',
+    sampleEquationLatex: "y'' + y' = 2x + 3e^x"
+  },
+  {
+    id: 'dt-8-reduction',
+    stepNumber: 8,
+    orderGroup: 'Higher-Order ODE (Q2)',
+    ifYouSeeTitle: 'IF YOU SEE: "Given that y = y₁(x) is a homogeneous solution" (Reduction of Order)',
+    arabicIfYouSee: 'إذا رأيت: جملة "Given that y = ... is a solution" (اختزال الرتبة)',
+    visualPatternLatex: "P(x)y'' + Q(x)y' + R(x)y = G(x), \\quad \\text{given } y_1 = x \\text{ or } y_1 = e^{2x}",
+    instantTestLatex: "y = y_1 u \\implies \\text{Compute } y' \\text{ and } y'' \\text{ and plug into ODE}",
+    doThisAction: 'DO THIS: Substitute y = y_1 u. All non-derivative "u" terms MUST cancel to 0! Then let z = u\' and z\' = u\'\', solve 1st-order linear ODE for z, integrate for u, and multiply by y_1!',
+    arabicDoThis: 'عوض بـ y = y_1 u، ستختصر حدود u الخالية من المشتقات تماماً! ثم ضع z = u\' وحلها كمعادلة خطية من الرتبة الأولى.',
+    solutionFormulaLatex: "z = u', \\quad z' + P_{\\text{red}}(x)z = Q_{\\text{red}}(x) \\implies u = \\int z\\,dx \\implies y = y_1(x)\\cdot u(x)",
+    killerTrapWarning: 'Never stop at u(x)! You must multiply u(x) by y_1(x) at the very end to write y(x).',
+    sampleQuestionId: 'f23-q2c',
+    sampleEquationLatex: "x^2 y'' + xy' - y = x, \\quad (y_1 = x)"
+  }
+];

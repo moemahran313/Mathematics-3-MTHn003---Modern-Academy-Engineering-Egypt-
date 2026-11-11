@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Search,
-  Filter,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -12,24 +11,58 @@ import {
   AlertTriangle,
   Copy,
   Check,
-  BookOpen,
   ExternalLink,
-  Layers,
   Award,
+  Flame,
+  Bookmark,
+  RotateCcw,
 } from 'lucide-react';
-import { MASTER_EXAM_QUESTIONS, MasterExamQuestion } from '../data/masterExamBankData';
+import {
+  MASTER_EXAM_QUESTIONS,
+  GOLDEN_12_QUESTION_IDS,
+  MasterExamQuestion,
+} from '../data/masterExamBankData';
 import { MathView } from './MathView';
+
+export const WEAK_SPOTS_STORAGE_KEY = 'math3_weak_spots_v1';
+
+export function getSavedWeakSpots(): Record<string, boolean> {
+  try {
+    const saved = localStorage.getItem(WEAK_SPOTS_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function setSavedWeakSpot(qId: string, isWeak: boolean): Record<string, boolean> {
+  const current = getSavedWeakSpots();
+  const next = { ...current };
+  if (isWeak) {
+    next[qId] = true;
+  } else {
+    delete next[qId];
+  }
+  try {
+    localStorage.setItem(WEAK_SPOTS_STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // ignore
+  }
+  return next;
+}
 
 interface QuestionBankViewProps {
   initialFilterId?: string;
+  initialPresetFilter?: 'All' | 'Golden12' | 'WeakSpots';
   onPracticeQuestion?: (qId: string) => void;
 }
 
 export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   initialFilterId,
-  onPracticeQuestion,
+  initialPresetFilter = 'All',
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [presetMode, setPresetMode] = useState<'All' | 'Golden12' | 'WeakSpots'>(initialPresetFilter);
   const [selectedSource, setSelectedSource] = useState<string>('All');
   const [selectedMethod, setSelectedMethod] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
@@ -40,6 +73,19 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   });
   const [revealedSteps, setRevealedSteps] = useState<Record<string, number>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialPresetFilter) {
+      setPresetMode(initialPresetFilter);
+    }
+  }, [initialPresetFilter]);
+
+  useEffect(() => {
+    if (initialFilterId) {
+      setExpandedIds((prev) => ({ ...prev, [initialFilterId]: true }));
+    }
+  }, [initialFilterId]);
+
   const [masteredIds, setMasteredIds] = useState<Record<string, boolean>>(() => {
     try {
       const saved = localStorage.getItem('math3_mastered_bank_v1');
@@ -48,6 +94,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       return {};
     }
   });
+
+  const [weakSpotIds, setWeakSpotIds] = useState<Record<string, boolean>>(() => getSavedWeakSpots());
 
   const toggleMastered = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -60,6 +108,16 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       }
       return next;
     });
+    // If marked mastered, optionally clear from weak spots
+    if (!masteredIds[id] && weakSpotIds[id]) {
+      setWeakSpotIds(setSavedWeakSpot(id, false));
+    }
+  };
+
+  const toggleWeakSpot = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextState = !weakSpotIds[id];
+    setWeakSpotIds(setSavedWeakSpot(id, nextState));
   };
 
   const sources = useMemo(() => {
@@ -88,8 +146,17 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
     ];
   }, []);
 
+  const weakSpotCount = Object.keys(weakSpotIds).length;
+  const masteredCount = Object.values(masteredIds).filter(Boolean).length;
+
   const filteredQuestions = useMemo(() => {
     return MASTER_EXAM_QUESTIONS.filter((q) => {
+      if (presetMode === 'Golden12' && !GOLDEN_12_QUESTION_IDS.includes(q.id)) {
+        return false;
+      }
+      if (presetMode === 'WeakSpots' && !weakSpotIds[q.id]) {
+        return false;
+      }
       if (selectedSource !== 'All' && !q.sourceExam.includes(selectedSource)) {
         return false;
       }
@@ -121,7 +188,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       }
       return true;
     });
-  }, [selectedSource, selectedMethod, selectedDifficulty, searchQuery]);
+  }, [presetMode, weakSpotIds, selectedSource, selectedMethod, selectedDifficulty, searchQuery]);
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -154,30 +221,36 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const masteredCount = Object.values(masteredIds).filter(Boolean).length;
-
   return (
     <div className="space-y-6 pb-12">
-      {/* Top Summary & PDF Source Links Bar */}
+      {/* Top Summary & Playlist Switcher */}
       <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-xs text-teal-400 font-mono">
               <span>COMPLETE VERIFIED QUESTION BANK</span>
               <span>·</span>
-              <span>{MASTER_EXAM_QUESTIONS.length} ANALYZED QUESTIONS</span>
+              <span className="tabular-nums">{MASTER_EXAM_QUESTIONS.length} ANALYZED QUESTIONS</span>
               <span>·</span>
               <span className="tabular-nums">{masteredCount}/{MASTER_EXAM_QUESTIONS.length} MASTERED</span>
+              {weakSpotCount > 0 && (
+                <>
+                  <span>·</span>
+                  <span className="text-rose-400 font-bold tabular-nums">
+                    {weakSpotCount} IN MISTAKE QUEUE
+                  </span>
+                </>
+              )}
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
               Every Exam & Revision Sheet Question — Solved Step-by-Step
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 max-w-3xl leading-relaxed">
-              Every single question from the 5 official Modern Academy Midterm Exams (Fall 2020–2025) and the 31-question Fall 2027 Official Revision Sheet, complete with visual recognition triggers, examiner traps, and official shortcuts.
+              Switch between all 58 questions, the curated <strong>12 Golden Exam Questions (45-Min Emergency Playlist)</strong> covering 100% of exam archetypes without repetition, or your personal <strong>Weak-Spot Mistake Queue</strong>.
             </p>
           </div>
 
-          {/* Self-Test Progressive Reveal Toggle */}
+          {/* Active Recall Self-Test Toggle */}
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => {
@@ -191,9 +264,79 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               }`}
             >
               {selfTestMode ? <EyeOff className="w-4 h-4 text-amber-400" /> : <Eye className="w-4 h-4 text-teal-400" />}
-              <span>{selfTestMode ? 'Active Recall Mode: ON (Steps Hidden)' : 'Study Mode: All Steps Visible'}</span>
+              <span>{selfTestMode ? 'Active Recall: ON (Steps Hidden)' : 'Study Mode: All Steps Visible'}</span>
             </button>
           </div>
+        </div>
+
+        {/* 3 Primary Cram Playlists Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <button
+            onClick={() => setPresetMode('All')}
+            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between ${
+              presetMode === 'All'
+                ? 'bg-teal-500/15 border-teal-500/50 text-slate-100'
+                : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+            }`}
+          >
+            <div>
+              <div className="text-xs font-mono font-bold text-teal-400">COMPLETE ARCHIVE</div>
+              <div className="text-sm font-bold text-slate-100">All 58 Exam & Sheet Questions</div>
+            </div>
+            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300">
+              58 Qs
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              setPresetMode('Golden12');
+              setSelectedSource('All');
+              setSelectedMethod('All');
+              setSelectedDifficulty('All');
+            }}
+            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between ${
+              presetMode === 'Golden12'
+                ? 'bg-amber-500/15 border-amber-500/50 text-slate-100'
+                : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+            }`}
+          >
+            <div>
+              <div className="text-xs font-mono font-bold text-amber-400 flex items-center gap-1">
+                <Flame className="w-3.5 h-3.5" />
+                <span>45-MIN EMERGENCY PLAYLIST</span>
+              </div>
+              <div className="text-sm font-bold text-slate-100">The 12 Golden Exam Questions</div>
+            </div>
+            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300">
+              12 Qs
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
+              setPresetMode('WeakSpots');
+              setSelectedSource('All');
+              setSelectedMethod('All');
+              setSelectedDifficulty('All');
+            }}
+            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between ${
+              presetMode === 'WeakSpots'
+                ? 'bg-rose-500/15 border-rose-500/50 text-slate-100'
+                : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+            }`}
+          >
+            <div>
+              <div className="text-xs font-mono font-bold text-rose-400 flex items-center gap-1">
+                <Bookmark className="w-3.5 h-3.5" />
+                <span>SPACED REPETITION QUEUE</span>
+              </div>
+              <div className="text-sm font-bold text-slate-100">My Mistakes & Weak Spots</div>
+            </div>
+            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300">
+              {weakSpotCount} Qs
+            </span>
+          </button>
         </div>
 
         {/* Original Attached PDF Papers Bar */}
@@ -222,6 +365,26 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
         </div>
       </div>
 
+      {/* Golden 12 Callout Banner when active */}
+      {presetMode === 'Golden12' && (
+        <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <div className="text-xs font-mono font-bold text-amber-400">
+              THE 45-MINUTE EMERGENCY CRAM PLAYLIST (12 GOLDEN ARCHETYPES)
+            </div>
+            <p className="text-xs text-slate-300">
+              If you only have 45 minutes before the exam, master these 12 hand-picked questions. Each one represents a distinct trick from Prof. Ashraf Taha & Dr. Amira Salem's exams with zero redundancy.
+            </p>
+          </div>
+          <button
+            onClick={expandAll}
+            className="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-bold shrink-0 cursor-pointer whitespace-nowrap"
+          >
+            Expand All 12 Solutions
+          </button>
+        </div>
+      )}
+
       {/* Filter & Search Bar */}
       <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
@@ -246,7 +409,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
             >
               {sources.map((src) => (
                 <option key={src} value={src}>
-                  {src === 'All' ? 'All Exams & Revision Sheet (58 Questions)' : src}
+                  {src === 'All' ? 'All Exams & Revision Sheet' : src}
                 </option>
               ))}
             </select>
@@ -302,18 +465,51 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
         </div>
       </div>
 
+      {/* Empty State for Weak Spots */}
+      {filteredQuestions.length === 0 && (
+        <div className="p-10 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-3">
+          <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+          <h3 className="text-base font-bold text-slate-100">
+            {presetMode === 'WeakSpots'
+              ? 'Your Mistake & Weak-Spot Queue is Empty!'
+              : 'No Questions Match Current Filter'}
+          </h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">
+            {presetMode === 'WeakSpots'
+              ? 'Any question you miss in the Diagnostic Drill or flag with "Review Again" will automatically appear here for focused cramming.'
+              : 'Try resetting your search query or switching back to All Questions.'}
+          </p>
+          <button
+            onClick={() => {
+              setPresetMode('All');
+              setSelectedSource('All');
+              setSelectedMethod('All');
+              setSelectedDifficulty('All');
+              setSearchQuery('');
+            }}
+            className="px-4 py-2 rounded-xl bg-teal-500 text-slate-950 text-xs font-bold cursor-pointer"
+          >
+            Show All 58 Questions
+          </button>
+        </div>
+      )}
+
       {/* Questions List */}
       <div className="space-y-4">
         {filteredQuestions.map((q, index) => {
           const isExpanded = !!expandedIds[q.id];
           const isMastered = !!masteredIds[q.id];
+          const isWeakSpot = !!weakSpotIds[q.id];
+          const isGolden = GOLDEN_12_QUESTION_IDS.includes(q.id);
           const currentRevealedCount = selfTestMode ? revealedSteps[q.id] || 0 : q.steps.length + 1;
 
           return (
             <div
               key={q.id}
               className={`rounded-2xl border transition-colors overflow-hidden ${
-                isMastered
+                isWeakSpot
+                  ? 'bg-slate-900/90 border-rose-500/40'
+                  : isMastered
                   ? 'bg-slate-900/60 border-emerald-500/30'
                   : 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
               }`}
@@ -324,7 +520,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                 className="p-5 cursor-pointer flex flex-col lg:flex-row lg:items-center justify-between gap-4"
               >
                 <div className="space-y-2.5 flex-1 min-w-0">
-                  {/* Unboxed Metadata Line (Zero-Pill Compliance) */}
+                  {/* Unboxed Metadata Line */}
                   <div className="flex items-center gap-2 text-xs text-slate-400 flex-wrap font-mono">
                     <span className="text-teal-400 font-bold tabular-nums">
                       #{index + 1} · {q.numberLabel}
@@ -345,6 +541,12 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                     </span>
                     <span aria-hidden="true">·</span>
                     <span className="tabular-nums">{q.points} Marks</span>
+                    {isGolden && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span className="text-amber-400 font-bold">★ Golden 12 Archetype</span>
+                      </>
+                    )}
                   </div>
 
                   {/* Problem Statement if Word Problem */}
@@ -367,7 +569,20 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                 </div>
 
                 {/* Right Action Controls */}
-                <div className="flex items-center gap-2.5 shrink-0 self-end lg:self-center">
+                <div className="flex items-center gap-2 shrink-0 self-end lg:self-center flex-wrap">
+                  <button
+                    onClick={(e) => toggleWeakSpot(q.id, e)}
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap ${
+                      isWeakSpot
+                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-rose-300'
+                    }`}
+                    title="Add or remove from your Weak-Spot Mistake Queue"
+                  >
+                    <Bookmark className="w-3.5 h-3.5" />
+                    <span>{isWeakSpot ? 'In Mistake Queue' : 'Flag Weak Spot'}</span>
+                  </button>
+
                   <button
                     onClick={(e) => toggleMastered(q.id, e)}
                     className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap ${
@@ -377,7 +592,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                     }`}
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>{isMastered ? 'Mastered' : 'Mark Mastered'}</span>
+                    <span>{isMastered ? 'Mastered' : 'Mastered'}</span>
                   </button>
 
                   <button
@@ -402,9 +617,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               {/* Expanded Analytical Breakdown & Step-by-Step Solution */}
               {isExpanded && (
                 <div className="p-5 sm:p-6 bg-slate-950/90 border-t border-slate-800/90 space-y-5">
-                  {/* 3-Column Intelligence Strip: Recognition Trigger | Examiner Trap | Secret Shortcut */}
+                  {/* 3-Column Intelligence Strip */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* 1. How to Spot It */}
                     <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-teal-400">
                         <Eye className="w-3.5 h-3.5 shrink-0" />
@@ -416,7 +630,6 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                       </p>
                     </div>
 
-                    {/* 2. Examiner Trap */}
                     <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/25 space-y-1.5">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400">
                         <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
@@ -428,7 +641,6 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                       </p>
                     </div>
 
-                    {/* 3. 10-Second Shortcut */}
                     <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/25 space-y-1.5">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
                         <Lightbulb className="w-3.5 h-3.5 shrink-0" />
