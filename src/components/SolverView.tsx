@@ -58,21 +58,21 @@ export const SolverView: React.FC = () => {
   const powerZ = 1 - n;
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12">
+    <div className="space-y-6 animate-fadeIn pb-12 min-w-0">
       {/* Top Tool Switcher */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-2 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-md">
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-850 overflow-x-auto no-scrollbar">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-2 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-md min-w-0">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-850 overflow-x-auto no-scrollbar w-full sm:w-auto">
           <button
             onClick={() => setActiveTool('latex_solver')}
-            className={`px-4 py-2.5 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2.5 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0 ${
               activeTool === 'latex_solver'
                 ? 'bg-teal-500 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
             }`}
           >
-            <BrainCircuit className="w-4 h-4" />
+            <BrainCircuit className="w-4 h-4 shrink-0" />
             <span>LaTeX Step-by-Step Solver</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+            <span className={`hidden sm:inline text-[10px] px-1.5 py-0.2 rounded font-mono ${
               activeTool === 'latex_solver' ? 'bg-slate-950/40 text-slate-950 font-black' : 'bg-slate-800 text-slate-400'
             }`}>
               Custom Keyboard
@@ -81,25 +81,25 @@ export const SolverView: React.FC = () => {
 
           <button
             onClick={() => setActiveTool('auxiliary')}
-            className={`px-4 py-2.5 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2.5 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0 ${
               activeTool === 'auxiliary'
                 ? 'bg-teal-500 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
             }`}
           >
-            <Calculator className="w-4 h-4" />
+            <Calculator className="w-4 h-4 shrink-0" />
             <span>2nd Order Auxiliary Roots (am² + bm + c)</span>
           </button>
 
           <button
             onClick={() => setActiveTool('bernoulli')}
-            className={`px-4 py-2.5 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2.5 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0 ${
               activeTool === 'bernoulli'
                 ? 'bg-teal-500 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
             }`}
           >
-            <Sliders className="w-4 h-4" />
+            <Sliders className="w-4 h-4 shrink-0" />
             <span>Bernoulli Linearizer (yⁿ)</span>
           </button>
         </div>

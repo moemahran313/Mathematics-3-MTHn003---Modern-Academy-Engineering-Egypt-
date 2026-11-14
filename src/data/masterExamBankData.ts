@@ -1,4 +1,7 @@
 import { Category } from '../types';
+import { FINAL_SHEET_AND_NOTES_QUESTIONS } from './finalSheetAndNotesBankData';
+import { FINAL_EXAMS_1_TO_3_QUESTIONS } from './finalWrittenExams1To3Data';
+import { FINAL_EXAMS_4_TO_6_QUESTIONS } from './finalWrittenExams4To6Data';
 
 export interface MasterQuestionStep {
   stepNumber: number;
@@ -18,7 +21,13 @@ export interface MasterExamQuestion {
   sourceFileUrl: string;
   points: number;
   category: Category;
-  subCategory: 'First-Order ODE' | 'Higher-Order ODE' | 'Physical & Circuit Applications';
+  subCategory:
+    | 'First-Order ODE'
+    | 'Higher-Order ODE'
+    | 'Physical & Circuit Applications'
+    | 'Laplace & Inverse Laplace'
+    | 'Fourier Series & Legendre'
+    | 'Calculus & Integration Rescue';
   methodTag: string;
   arabicMethodTag: string;
   difficulty: 'Core' | 'Trick' | 'Boss';
@@ -270,7 +279,116 @@ export const ZERO_TO_HERO_PATTERNS: ZeroToHeroPattern[] = [
     ],
     relatedQuestionIds: [
       'f24-q2a', 'f24-q2b', 'f25-q2b-1', 'f25-q2b-2', 'f23-q2c', 'f20-q2c', 'f21-q2c',
-      's27-ho-6', 's27-ho-13'
+      's27-ho-6', 's27-ho-13', 'fin1-q2c', 'fin1-q2d', 'fin2-q2c', 'fin2-q2d', 'fin4-q2a-b-c-d', 'fin5-q2a-b-c'
+    ]
+  },
+  {
+    id: 'pat-7-laplace-forward',
+    stepOrder: 7,
+    name: '07. Forward Laplace Transforms (Shifts, Integrals, Derivatives & Division by t)',
+    arabicName: '٧. تحويل لابلاس المباشر (الإزاحة الأولى والثانية والتكامل والاشتقاق والقسمة على t)',
+    timeToMaster: '5 Mins',
+    frequencyInExams: '100% (Question 3b in EVERY Final Exam — 12 Points!)',
+    visualSignatureLatex: "f(t) = u_a(t)e^t\\cos(t-a), \\quad \\int_0^t g(\\tau)\\,d\\tau, \\quad t^n g(t), \\quad \\frac{g(t)}{t}",
+    howToSpotIt: 'Question 3(b) on every Final Exam tests the 4 Laplace operational rules: (1) Trig powers/products, (2) Integral ∫_0^t dτ, (3) Unit Step u_a(t) combined with e^t or t^2, and (4) Division by t.',
+    arabicHowToSpot: 'السؤال الثالث (b) في كل امتحان فاينل يختبر القواعد الأربع: المتطابقات المثلثية، التكامل من 0 إلى t، دالة الخطوة u_a(t)، والقسمة على t.',
+    goldenAlgorithm: [
+      '1. TRIG POWERS/PRODUCTS: Replace sin^2(bt) = ½(1 - cos 2bt), cos^2(bt) = ½(1 + cos 2bt), and sin A cos B = ½[sin(A+B) + sin(A-B)] BEFORE transforming!',
+      '2. FIRST SHIFT (e^{at} g(t)): Ignore e^{at}, transform g(t) → G(s), then replace every s with (s - a).',
+      '3. SECOND SHIFT (u_a(t) g(t)): Every t MUST be written as (t - a) first! For e^t with u_a(t), write e^t = e^a · e^{t-a}. For t^2 with u_5(t), write t^2 = ((t-5)+5)^2. Then pull out e^{-as}!',
+      '4. INTEGRAL RULE (∫_0^t g(τ) dτ): Transform g(t) → G(s) and multiply by 1/s. (If the upper limit is ∞, e.g. ∫_0^∞ e^{-3t}sin^2 t dt, plug s = 3 into G(s)!)',
+      '5. MULTIPLICATION BY t^n: Differentiate (-1)^n d^n/ds^n G(s). DIVISION BY t: Integrate ∫_s^∞ G(z) dz (memorize L{sin t / t} = π/2 - tan⁻¹s).'
+    ],
+    examinerFavoriteTricks: [
+      {
+        trickTitle: 'The Unaligned e^t with u_a(t) Trap (Final 1 Q3b-iii, Final 3 Q3c-iii, Laplace.pdf p.10)',
+        exampleLatex: 'u_7(t)e^t\\cos(t-7) = e^7 u_7(t)e^{t-7}\\cos(t-7) \\implies e^7 e^{-7s}\\frac{s-1}{(s-1)^2+1}',
+        howToDefeatIt: 'Never apply u_7(t) while e^t has an unshifted t! Add and subtract 7 in the exponent: e^{t-7+7} = e^7 e^{t-7}, and pull the constant e^7 outside.'
+      },
+      {
+        trickTitle: 'The Phase-Shifted Cosine Trap (Final 2 Q3b-i)',
+        exampleLatex: '\\cos\\left(3t + \\frac{\\pi}{2}\\right) = \\cos 3t\\cos\\frac{\\pi}{2} - \\sin 3t\\sin\\frac{\\pi}{2} = -\\sin 3t \\implies -\\frac{3}{s^2+9}',
+        howToDefeatIt: 'Cosine does NOT distribute over addition! Use the angle-sum identity first.'
+      },
+      {
+        trickTitle: 'Improper Integral ∫_0^∞ vs. Volterra Integral ∫_0^t (Final 3 Q3a)',
+        exampleLatex: '\\int_0^{\\infty} e^{-3t}\\sin^2 t\\,dt = \\left.\\mathcal{L}\\{\\sin^2 t\\}\\right|_{s=3} = \\left.\\frac{2}{s(s^2+4)}\\right|_{s=3} = \\frac{2}{39}',
+        howToDefeatIt: 'When the upper limit is ∞, it is the definition of the Laplace transform evaluated at the numerical exponent s = 3!'
+      }
+    ],
+    relatedQuestionIds: [
+      's24f-lap-1a', 's24f-lap-1b', 's24f-lap-1c', 's24f-lap-1d', 's24f-lap-1e',
+      's24f-lap-1f', 's24f-lap-1g', 's24f-lap-1h', 's24f-lap-1i', 's24f-lap-1j',
+      'lap-note-ex1', 'lap-note-ex2', 'lap-note-ex4', 'fin1-q3b-all', 'fin2-q3b-all',
+      'fin3-q3a-b-c', 'fin4-q3-q4-q5', 'fin5-q3-q4'
+    ]
+  },
+  {
+    id: 'pat-8-inverse-laplace & IVPs',
+    stepOrder: 8,
+    name: '08. Inverse Laplace Transforms & Laplace ODE Initial Value Problems',
+    arabicName: '٨. تحويل لابلاس العكسي وحل المعادلات التفاضلية بلابلاس',
+    timeToMaster: '5 Mins',
+    frequencyInExams: '100% (Question 3a & Question 4a in EVERY Final Exam — 16 Points!)',
+    visualSignatureLatex: "F(s) = \\ln\\left(\\frac{s+a}{s+b}\\right), \\quad \\tan^{-1}\\left(\\frac{s}{a}\\right), \\quad \\frac{(s+9)e^{-6s}}{s^2+6s+3}, \\quad y'' + ay' + by = g(t)",
+    howToSpotIt: 'Look at the structure of F(s): (1) ln or tan⁻¹ → Derivative Rule -t f(t); (2) Unfactorable quadratic → Complete the Square; (3) Factored denominator → Heaviside Cover-Up Partial Fractions; (4) e^{-as} → Second Shift u_a(t) f(t-a).',
+    arabicHowToSpot: 'حدد شكل F(s): لوغاريتم أو tan⁻¹ (اشتقاق وقسمة على -t)، مقام تربيعي لا يتحلل (إكمال مربع)، أقواس مضروبة (كسور جزئية)، أو e^{-as} (إزاحة ثانية).',
+    goldenAlgorithm: [
+      '1. LOGARITHMS & ARCTAN: Expand ln(A/B) = ln A - ln B FIRST! Differentiate w.r.t. s, take L⁻¹, and divide by (-t): f(t) = -(1/t) L⁻¹{F\'(s)}.',
+      '2. COMPLETING THE SQUARE: Rewrite s^2 + 2bs + c = (s+b)^2 + (c-b^2). If s is in the numerator, ALWAYS align it as (s+b) - b before pulling out e^{-bt}!',
+      '3. SECOND SHIFT INVERSE (e^{-as} G(s)): Ignore e^{-as} first! Invert G(s) → g(t), then write u_a(t) g(t - a), replacing EVERY t with (t - a).',
+      '4. LAPLACE ODE IVP: Replace y\'\' with s^2 Y(s) - s y(0) - y\'(0) and y\' with s Y(s) - y(0). Isolate Y(s), use Cover-Up Partial Fractions, and invert!'
+    ],
+    examinerFavoriteTricks: [
+      {
+        trickTitle: 'Log Law Expansion Before Differentiating (Final 3 Q4a-i & Final 4 Q4a-i)',
+        exampleLatex: '\\ln\\left(\\frac{s^2+16}{(s-2)(s-3)}\\right) = \\ln(s^2+16) - \\ln(s-2) - \\ln(s-3) \\xrightarrow{d/ds} \\frac{2s}{s^2+16} - \\frac{1}{s-2} - \\frac{1}{s-3}',
+        howToDefeatIt: 'Never use the quotient rule or expand (s-2)(s-3) inside a logarithm! Split the log into a sum/difference first so each derivative is a 1-step standard fraction.'
+      },
+      {
+        trickTitle: 'Numerator Alignment When Completing the Square (Sheet [2]d, [2]f, Final 4 Q4a-ii)',
+        exampleLatex: '\\frac{s}{s^2+10s+8} = \\frac{(s+5) - 5}{(s+5)^2 - 17} \\implies e^{-5t}\\left(\\cosh\\sqrt{17}t - \\frac{5}{\\sqrt{17}}\\sinh\\sqrt{17}t\\right)',
+        howToDefeatIt: 'Whenever the denominator has (s+5)^2, you cannot leave a bare "s" in the numerator! Add and subtract 5 so the numerator becomes (s+5) - 5.'
+      }
+    ],
+    relatedQuestionIds: [
+      's24f-ilap-2a', 's24f-ilap-2b', 's24f-ilap-2c', 's24f-ilap-2d', 's24f-ilap-2e',
+      's24f-ilap-2f', 's24f-ilap-2g', 's24f-ilap-2h', 's24f-ode-3a', 's24f-ode-3b',
+      's24f-ode-3c', 'lap-note-ex3', 'fin1-q3a', 'fin1-q4a-all', 'fin2-q3a', 'fin2-q4a-all'
+    ]
+  },
+  {
+    id: 'pat-9-fourier-legendre',
+    stepOrder: 9,
+    name: '09. Fourier Series & Legendre Polynomials (12 Guaranteed Final Exam Points)',
+    arabicName: '٩. متسلسلات فورييه وكثيرات حدود ليجندر (١٢ درجة مضمونة في كل امتحان فاينل)',
+    timeToMaster: '5 Mins',
+    frequencyInExams: '100% (Question 4b + Question 5 in EVERY Final Exam!)',
+    visualSignatureLatex: "f(x) = \\frac{a_0}{2} + \\sum_{n=1}^{\\infty}\\left(a_n\\cos\\frac{n\\pi x}{T} + b_n\\sin\\frac{n\\pi x}{T}\\right) \\quad | \\quad xP_n(x) = \\frac{n+1}{2n+1}P_{n+1}(x) + \\frac{n}{2n+1}P_{n-1}(x)",
+    howToSpotIt: 'Question 4(b) asks for a Fourier Series (on [-π, π]) or a Half-Range Cosine/Sine Series (on [0, T]). Question 5 asks to prove the Legendre recurrence relation and evaluate 2–3 orthogonality integrals on [-1, 1].',
+    arabicHowToSpot: 'السؤال الرابع (b) يطلب متسلسلة فورييه (كاملة أو نصف مدى)، والسؤال الخامس يطلب إثبات علاقة تكرار ليجندر وحساب تكاملات التعامد على [-1, 1].',
+    goldenAlgorithm: [
+      '1. FULL-RANGE [-T, T]: Test parity first! If f(-x) = -f(x) (Odd, e.g. x, x^3), then a_0 = a_n = 0 and b_n = (2/T)∫_0^T f(x)sin(nπx/T)dx. If f(-x) = f(x) (Even, e.g. |x|, x^2), then b_n = 0 and a_0, a_n use (2/T)∫_0^T.',
+      '2. HALF-RANGE [0, T]: Ignore whether f(x) looks algebraic even or odd! Follow the wording: "Fourier Cosine Series" → b_n = 0; "Fourier Sine Series" → a_0 = a_n = 0!',
+      '3. TABULAR IBP FOR FOURIER: Differentiate x^k down to 0, integrate sin/cos, and use sin(nπ) = 0, cos(nπ) = (-1)^n, cos(0) = 1!',
+      '4. LEGENDRE ORTHOGONALITY: ∫_{-1}^1 P_m(x)P_n(x)dx = 0 (if m ≠ n) and = 2/(2n+1) (if m = n). Remember P_0(x) = 1 and P_1(x) = x!',
+      '5. LEGENDRE INTEGRAL ∫_{-1}^1 x P_n(x) P_{n+1}(x) dx: Replace x P_n(x) using the recurrence relation; only [(n+1)/(2n+1)] ∫_{-1}^1 P_{n+1}^2(x) dx = [(n+1)/(2n+1)]·[2/(2n+3)] survives!'
+    ],
+    examinerFavoriteTricks: [
+      {
+        trickTitle: 'Half-Range Sine Series of an Even Power x² or x⁴ (Sheet [4]d, Final 3 Q4b, Final 4 Q4b, Final 5 Q4a)',
+        exampleLatex: 'f(x) = x^2, \\quad 0 \\le x \\le \\pi \\quad \\text{as Fourier Sine Series} \\implies a_0 = 0, \\; a_n = 0!',
+        howToDefeatIt: 'Because the interval starts at 0 ([0, π] or [0, 2]) and specifies "Fourier Sine Series", you are constructing the odd extension! Set a_0 = a_n = 0 immediately and compute only b_n.'
+      },
+      {
+        trickTitle: 'The P_0(x) = 1 and High-Index Legendre Integral Trick (Final 2 Q5b)',
+        exampleLatex: '\\int_{-1}^1 P_0(x)P_3^2(x)\\,dx = \\int_{-1}^1 1 \\cdot P_3^2(x)\\,dx = \\frac{2}{7}, \\qquad \\int_{-1}^1 xP_7(x)P_8(x)\\,dx = \\frac{8}{15}\\cdot\\frac{2}{17} = \\frac{16}{255}',
+        howToDefeatIt: 'Replace P_0(x) with 1 immediately, and for x P_n P_{n+1} plug n into [(n+1)/(2n+1)]·[2/(2n+3)].'
+      }
+    ],
+    relatedQuestionIds: [
+      's24f-four-4a', 's24f-four-4b', 's24f-four-4c', 's24f-four-4d',
+      'fin1-q4b', 'fin1-q5-all', 'fin2-q4b', 'fin2-q5-all', 'fin3-q4-q5', 'fin4-q3-q4-q5', 'fin5-q3-q4'
     ]
   }
 ];
@@ -4129,32 +4247,45 @@ export const MASTER_EXAM_QUESTIONS: MasterExamQuestion[] = [
       ],
       correctKeyStepIndex: 0
     }
-  }
+  },
+  ...FINAL_SHEET_AND_NOTES_QUESTIONS,
+  ...FINAL_EXAMS_1_TO_3_QUESTIONS,
+  ...FINAL_EXAMS_4_TO_6_QUESTIONS
 ];
 
 // ============================================================================
-// THE 12 GOLDEN EXAM QUESTIONS (45-MINUTE EMERGENCY PLAYLIST)
-// Covers 100% of every exam archetype and trick without repetition
+// THE 18 GOLDEN EXAM QUESTIONS (EMERGENCY PLAYLIST — MIDTERM & FINAL)
+// Covers 100% of every Midterm & Final exam archetype and trick without repetition
 // ============================================================================
 export const GOLDEN_12_QUESTION_IDS: string[] = [
-  'f24-q1a',   // #1: Separable sec(y) + x^2/cos(y) + compound exponent e^(2-y)
-  'f25-q1a',   // #2: Separable e^(2x - y^2) with [1/2] missing derivative box trick
-  'f20-q1b',   // #3: Reducible to Separable z = x + y with -1 cancellation
-  'f21-q1c',   // #4: Homogeneous disguised logarithm ln(y) - ln(x) = ln(y/x)
-  'f25-q1c',   // #5: Non-Exact ODE with integrating factor μ(x) = e^x + Strike-Out Duplicate
-  's27-fo-14', // #6: Non-Exact ODE with integrating factor in y: μ(y) = y^2
-  'f23-q1d',   // #7: Bernoulli P*, Q* shortcut + 3-row Tabular Integration by Parts box
-  'f25-q2a',   // #8: 6th-Order Homogeneous ODE with m^3 = 0 triple root + synthetic division
-  's27-ho-9',  // #9: Undetermined Coefficients double-angle trig trap (2cos^2 x = 1 + cos 2x)
-  's27-ho-12', // #10: Undetermined Coefficients missing-y resonance boost (y'' + y' = 2x + 3e^x)
-  'f23-q2c',   // #11: Reduction of Order given y_1 = x (x^2 y'' + xy' - y = x)
-  'f25-q2b-1', // #12: RLC & Spring-Mass Physical Application (1/C = 1/0.02 = 50 repeated root)
+  'f24-q1a',       // #1: Separable sec(y) + x^2/cos(y) + compound exponent e^(2-y)
+  'f25-q1a',       // #2: Separable e^(2x - y^2) with [1/2] missing derivative box trick
+  'fin5-q1a',      // #3: Final 5/6 Q1a Disguised Log Cancellation ln(x/y) + ln y = ln x
+  'f20-q1b',       // #4: Reducible to Separable z = x + y with -1 cancellation
+  'f21-q1c',       // #5: Homogeneous disguised logarithm ln(y) - ln(x) = ln(y/x)
+  'f25-q1c',       // #6: Non-Exact ODE with integrating factor μ(x) = e^x + Strike-Out Duplicate
+  'fin1-q1c',      // #7: Final 1 Q1c Non-Exact ODE with μ(y) = y via (N_x - M_y)/M
+  'f23-q1d',       // #8: Bernoulli P*, Q* shortcut + 3-row Tabular Integration by Parts box
+  'f25-q2a',       // #9: 6th-Order Homogeneous ODE with m^3 = 0 triple root + synthetic division
+  's27-ho-9',      // #10: Undetermined Coefficients double-angle trig trap (2cos^2 x = 1 + cos 2x)
+  's27-ho-12',     // #11: Undetermined Coefficients missing-y resonance boost (y'' + y' = 2x + 3e^x)
+  'fin5-q2a-b-c',  // #12: Final 5/6 Q2 Variation of Parameters (sec x csc x) + y'' - y' = 5x + e^{3x}
+  'f23-q2c',       // #13: Reduction of Order given y_1 = x (x^2 y'' + xy' - y = x)
+  'f25-q2b-1',     // #14: RLC & Spring-Mass Physical Application (1/C = 1/0.02 = 50 repeated root)
+  'fin1-q3b-all',  // #15: Forward Laplace Master Archetypes (Trig, Integral, Combined Shift e^7, Div by t)
+  's24f-ilap-2f',  // #16: Inverse Laplace Boss (Combined Second Shift e^{-6s} + Completing Square)
+  'fin3-q3a-b-c',  // #17: Improper Integral via Laplace (s=3) + Laplace ODE IVP
+  'fin1-q5-all',   // #18: Legendre Recurrence Proof + Orthogonality Integrals & Fourier Half-Range
 ];
 
 export interface DecisionTreeNode {
   id: string;
   stepNumber: number;
-  orderGroup: 'First-Order ODE (Q1)' | 'Higher-Order ODE (Q2)';
+  orderGroup:
+    | 'First-Order ODE (Q1)'
+    | 'Higher-Order ODE (Q2)'
+    | 'Laplace & Inverse Laplace (Q3 & Q4a)'
+    | 'Fourier Series & Legendre (Q4b & Q5)';
   ifYouSeeTitle: string;
   arabicIfYouSee: string;
   visualPatternLatex: string;
@@ -4187,16 +4318,16 @@ export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
     id: 'dt-2-reducible',
     stepNumber: 2,
     orderGroup: 'First-Order ODE (Q1)',
-    ifYouSeeTitle: 'IF YOU SEE: A Repeated Linear Block (x + y) or Parallel Lines (y + 2x)',
-    arabicIfYouSee: 'إذا رأيت: قوس خطي مكرر مثل (x + y) أو مستقيمين متوازيين (y + 2x)',
-    visualPatternLatex: "y' = (x+y)\\ln(x+y) - 1 \\quad \\text{or} \\quad y' = \\frac{1 - 2(y+2x)}{1 + (y+2x)}",
+    ifYouSeeTitle: 'IF YOU SEE: A Repeated Linear Block (x + y), (x - y), or (y + 2x)',
+    arabicIfYouSee: 'إذا رأيت: قوس خطي مكرر مثل (x + y) أو (x - y) أو (y + 2x)',
+    visualPatternLatex: "y' = (x+y)\\ln(x+y) - 1, \\quad y' = -\\sin(x-y)+1, \\quad y' = \\frac{x-y+1}{x-y-1}",
     instantTestLatex: "z = ax + by \\implies z' = a + by'",
-    doThisAction: 'DO THIS: Substitute z = the repeated linear bracket. The constant term (-1 or -2) will cancel out and reduce it to a 1-step separable ODE!',
-    arabicDoThis: 'افرض المتغير z يساوي القوس الخطي المكرر (مثل z = x + y)، سيختصر الرقم الثابت وتتحول إلى فصل متغيرات فوراً.',
-    solutionFormulaLatex: "z = x + y \\implies y' = z' - 1 \\implies \\int \\frac{dz}{F(z)} = \\int dx + C",
-    killerTrapWarning: 'Never expand (x+y) or try to use integrating factors on ln(x+y)!',
-    sampleQuestionId: 'f20-q1b',
-    sampleEquationLatex: "y' = (x + y)\\ln(x + y) - 1"
+    doThisAction: 'DO THIS: Substitute z = the repeated linear bracket. The constant term (-1 or +1) will cancel out and reduce it to a 1-step separable ODE!',
+    arabicDoThis: 'افرض المتغير z يساوي القوس الخطي المكرر (مثل z = x - y)، سيختصر الرقم الثابت وتتحول إلى فصل متغيرات فوراً.',
+    solutionFormulaLatex: "z = x - y \\implies y' = 1 - z' \\implies \\int \\frac{dz}{F(z)} = \\int dx + C",
+    killerTrapWarning: 'Never expand sin(x-y) or ln(x+y)!',
+    sampleQuestionId: 'fin2-q1b',
+    sampleEquationLatex: "\\frac{dy}{dx} = -\\sin(x - y) + 1"
   },
   {
     id: 'dt-3-homogeneous',
@@ -4204,12 +4335,12 @@ export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
     orderGroup: 'First-Order ODE (Q1)',
     ifYouSeeTitle: 'IF YOU SEE: Ratio (y/x), Log Difference (ln y - ln x), or Equal-Degree Terms',
     arabicIfYouSee: 'إذا رأيت: الكسر (y/x)، أو (ln y - ln x)، أو حدود متساوية في مجموع الأسس',
-    visualPatternLatex: "\\cos\\left(\\frac{y}{x}\\right), \\quad e^{y/x}, \\quad \\ln y - \\ln x = \\ln\\left(\\frac{y}{x}\\right), \\quad (x^2 - xy + y^2)dx - xy\\,dy = 0",
+    visualPatternLatex: "\\cos\\left(\\frac{y}{x}\\right), \\quad e^{y/x}, \\quad \\frac{y^2}{x^2}+\\frac{5y}{x}+4, \\quad x^3 y' = y^3 + xy^2 - x^2y",
     instantTestLatex: "\\frac{y}{x} = u \\implies y = xu \\implies y' = xu' + u",
-    doThisAction: 'DO THIS: Replace y/x with u and y\' with x u\' + u. Watch the "+u" term automatically cancel with the other side, then separate u and x!',
-    arabicDoThis: 'عوض عن y/x بـ u وعن y\' بـ xu\' + u، ستجد أن الحد (+u) يختصر تلقائياً من الطرفين ثم افصل المتغيرات.',
+    doThisAction: 'DO THIS: Replace y/x with u and y\' with x u\' + u. Watch the "+u" term simplify the RHS, then separate u and x!',
+    arabicDoThis: 'عوض عن y/x بـ u وعن y\' بـ xu\' + u، ثم افصل المتغيرات بين u و x.',
     solutionFormulaLatex: "x\\frac{du}{dx} = F(u) - u \\implies \\int \\frac{du}{F(u) - u} = \\int \\frac{dx}{x} = \\ln|x| + C",
-    killerTrapWarning: 'Don\'t forget to replace u back with (y/x) in your final boxed answer!',
+    killerTrapWarning: 'Watch out for Final 5 Q1a: ln(x/y) + ln y = ln x - ln y + ln y = ln x (Separable decoy, not Homogeneous!).',
     sampleQuestionId: 'f25-q1b',
     sampleEquationLatex: "xy' - y = x^2 e^{(y/x)}"
   },
@@ -4224,9 +4355,9 @@ export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
     doThisAction: 'DO THIS: Test M_y = N_x FIRST (takes 5 seconds!). If equal → Exact (integrate both and slash duplicates). If not equal → find μ(x) or μ(y) and multiply!',
     arabicDoThis: 'احسب M_y و N_x أولاً دائماً! إذا تساويا فهي تامة (كامل واشطب المكرر)، وإذا اختلفا احسب عامل التكامل μ.',
     solutionFormulaLatex: "\\text{If } M_y = N_x: \\int M\\,dx + \\int (\\text{non-duplicate } N)\\,dy = C \\quad | \\quad \\mu(x) = e^{\\int \\frac{M_y - N_x}{N}dx}, \\; \\mu(y) = e^{\\int \\frac{N_x - M_y}{M}dy}",
-    killerTrapWarning: 'In Sheet Q10, Q11, Q12, the equations look complicated or non-exact, but once moved to the LHS, M_y = N_x immediately!',
-    sampleQuestionId: 'f25-q1c',
-    sampleEquationLatex: "(xy + y^2)\\,dx + (x + 2y - 1)\\,dy = 0"
+    killerTrapWarning: 'In Final 1 Q1c, (N_x - M_y) = x + y + 1 cancels the (x + y + 1) factor in M = y(x + y + 1) to give μ(y) = y!',
+    sampleQuestionId: 'fin1-q1c',
+    sampleEquationLatex: "y(x+y+1)\\,dx + x(x+3y+2)\\,dy = 0"
   },
   {
     id: 'dt-5-linear-bernoulli',
@@ -4239,7 +4370,7 @@ export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
     doThisAction: 'DO THIS: Divide by whatever is in front of y\' FIRST. If Bernoulli, multiply P and Q by (1 - n), compute μ = e^{∫ P* dx}, and write y^{1-n} directly!',
     arabicDoThis: 'اقسم على معامل y\' أولاً! وفي حالة برنولي اضرب P و Q في (1-n) واستخدم قانون الحل المباشر لـ y^{1-n}.',
     solutionFormulaLatex: "y^{1-n} = \\frac{1}{\\mu}\\left[\\int \\mu(x)Q^*(x)\\,dx + C\\right] \\quad \\text{(for Linear, } n = 0 \\implies 1-n = 1\\text{)}",
-    killerTrapWarning: 'Never read P(x) before dividing by the leading x or sin(x) in front of y\'!',
+    killerTrapWarning: 'Never read P(x) before dividing by the leading x, (1+x^2), or sin(x) in front of y\'!',
     sampleQuestionId: 'f23-q1d',
     sampleEquationLatex: "y' + y = xe^{6x}y^5"
   },
@@ -4247,7 +4378,7 @@ export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
     id: 'dt-6-higher-homog',
     stepNumber: 6,
     orderGroup: 'Higher-Order ODE (Q2)',
-    ifYouSeeTitle: 'IF YOU SEE: Higher Derivatives (y\'\', y\'\'\', d⁶y/dx⁶) = 0 with Constant Coeffs',
+    ifYouSeeTitle: 'IF YOU SEE: Higher Derivatives (y\'\', y\'\'\', d⁵y/dx⁵, d⁶y/dx⁶) = 0 with Constant Coeffs',
     arabicIfYouSee: 'إذا رأيت: مشتقات عليا بمعاملات ثابتة تساوي صفراً',
     visualPatternLatex: "a_n y^{(n)} + \\dots + a_1 y' + a_0 y = 0 \\implies a_n m^n + \\dots + a_1 m + a_0 = 0",
     instantTestLatex: "\\text{Factor } m^k \\text{ if lower derivatives are missing! Check if } \\sum a_i = 0 \\implies m = 1 \\text{ is a root!}",
@@ -4262,16 +4393,16 @@ export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
     id: 'dt-7-undetermined',
     stepNumber: 7,
     orderGroup: 'Higher-Order ODE (Q2)',
-    ifYouSeeTitle: 'IF YOU SEE: Constant Coeffs with Non-Zero RHS (e^{ax}, sin/cos, Polynomials)',
-    arabicIfYouSee: 'إذا رأيت: معاملات ثابتة وطرف أيمن غير صفري (دالة أسية، مثلثية، كثيرة حدود)',
-    visualPatternLatex: "ay'' + by' + cy = G(x)",
-    instantTestLatex: "\\text{First simplify } 2\\cos^2 x = 1+\\cos 2x, \\quad \\sin 3x\\cos 3x = \\frac{1}{2}\\sin 6x, \\quad \\cos x\\tan x = \\sin x!",
-    doThisAction: 'DO THIS: Solve y_h first! Then write trial y_p. If any term in y_p duplicates a root of y_h with multiplicity r, multiply that part of y_p by x^r!',
-    arabicDoThis: 'أوجد الحل المتجانس y_h أولاً! ثم افرض y_p، وإذا تشابه الفرض مع أي حد في y_h اضرب الفرض في x (أو x^2).',
-    solutionFormulaLatex: "y = y_h + y_p",
-    killerTrapWarning: 'In y\'\' + y\' = 2x + 3e^x, the "y" term is missing so m = 0 is a root! You MUST multiply the polynomial (Ax+B) by x to get Ax^2 + Bx!',
-    sampleQuestionId: 's27-ho-12',
-    sampleEquationLatex: "y'' + y' = 2x + 3e^x"
+    ifYouSeeTitle: 'IF YOU SEE: Non-Zero RHS with e^{ax}, sin/cos, Polynomials vs. sec/tan/csc',
+    arabicIfYouSee: 'إذا رأيت: طرف أيمن غير صفري (أسية، مثلثية sin/cos، كثيرة حدود) مقابل (sec/tan/csc)',
+    visualPatternLatex: "ay'' + by' + cy = G(x) \\quad \\text{(Undetermined Coeffs for } e^{ax},\\sin,\\cos,x^n \\text{ | Wronskian for } \\sec,\\tan,\\csc\\text{)}",
+    instantTestLatex: "\\text{If } G(x) = \\sec x, \\tan x, \\sec x\\tan x, \\sec x\\csc x \\implies \\text{Variation of Parameters } (W = 1)!",
+    doThisAction: 'DO THIS: For e^{ax}, sin/cos, x^n → Undetermined Coefficients (check Resonance boost x^r!). For sec, tan, csc → Variation of Parameters with u_1 = cos x, u_2 = sin x, W = 1!',
+    arabicDoThis: 'للدوال الأسية و sin/cos وكثيرات الحدود استخدم المعاملات غير المعينة (وانتبه للرنين)، أما لـ sec و tan و csc فاستخدم طريقة فرونسكي!',
+    solutionFormulaLatex: "y = y_h + y_p \\quad | \\quad y_p = u_1\\int \\frac{-u_2 f(x)}{W}dx + u_2\\int \\frac{u_1 f(x)}{W}dx",
+    killerTrapWarning: 'In y\'\' - y\' = 5x + e^{3x} (Final 5 Q2c) and y\'\' + y\' = 2x + 3e^x (Sheet HO #12), y is missing so m = 0 is a root! Boost the polynomial to x(Ax+B)!',
+    sampleQuestionId: 'fin5-q2a-b-c',
+    sampleEquationLatex: "y'' - y' = 5x + e^{3x} \\quad \\text{and} \\quad y'' + y = \\sec(x)\\csc(x)"
   },
   {
     id: 'dt-8-reduction',
@@ -4279,13 +4410,73 @@ export const VISUAL_DECISION_TREE_NODES: DecisionTreeNode[] = [
     orderGroup: 'Higher-Order ODE (Q2)',
     ifYouSeeTitle: 'IF YOU SEE: "Given that y = y₁(x) is a homogeneous solution" (Reduction of Order)',
     arabicIfYouSee: 'إذا رأيت: جملة "Given that y = ... is a solution" (اختزال الرتبة)',
-    visualPatternLatex: "P(x)y'' + Q(x)y' + R(x)y = G(x), \\quad \\text{given } y_1 = x \\text{ or } y_1 = e^{2x}",
-    instantTestLatex: "y = y_1 u \\implies \\text{Compute } y' \\text{ and } y'' \\text{ and plug into ODE}",
-    doThisAction: 'DO THIS: Substitute y = y_1 u. All non-derivative "u" terms MUST cancel to 0! Then let z = u\' and z\' = u\'\', solve 1st-order linear ODE for z, integrate for u, and multiply by y_1!',
-    arabicDoThis: 'عوض بـ y = y_1 u، ستختصر حدود u الخالية من المشتقات تماماً! ثم ضع z = u\' وحلها كمعادلة خطية من الرتبة الأولى.',
-    solutionFormulaLatex: "z = u', \\quad z' + P_{\\text{red}}(x)z = Q_{\\text{red}}(x) \\implies u = \\int z\\,dx \\implies y = y_1(x)\\cdot u(x)",
-    killerTrapWarning: 'Never stop at u(x)! You must multiply u(x) by y_1(x) at the very end to write y(x).',
+    visualPatternLatex: "P(x)y'' + Q(x)y' + R(x)y = G(x), \\quad \\text{given } y_1 = x, \\; e^{2x}, \\; \\text{or } \\cos(x)",
+    instantTestLatex: "y = y_1 v \\implies \\text{Compute } y' \\text{ and } y'' \\text{ and plug into ODE}",
+    doThisAction: 'DO THIS: Substitute y = y_1 v. All non-derivative "v" terms MUST cancel to 0! Then let z = v\' and z\' = v\'\', solve 1st-order linear ODE for z, integrate for v, and multiply by y_1!',
+    arabicDoThis: 'عوض بـ y = y_1 v، ستختصر حدود v الخالية من المشتقات تماماً! ثم ضع z = v\' وحلها كمعادلة خطية من الرتبة الأولى.',
+    solutionFormulaLatex: "z = v', \\quad z' + P_{\\text{red}}(x)z = Q_{\\text{red}}(x) \\implies v = \\int z\\,dx \\implies y = y_1(x)\\cdot v(x)",
+    killerTrapWarning: 'Never stop at v(x)! You must multiply v(x) by y_1(x) at the very end to write y(x).',
     sampleQuestionId: 'f23-q2c',
     sampleEquationLatex: "x^2 y'' + xy' - y = x, \\quad (y_1 = x)"
+  },
+  {
+    id: 'dt-9-laplace',
+    stepNumber: 9,
+    orderGroup: 'Laplace & Inverse Laplace (Q3 & Q4a)',
+    ifYouSeeTitle: 'IF YOU SEE: Forward Laplace L{f(t)} with e^{at}, u_a(t), tⁿ, ÷t, or ∫₀ᵗ dτ',
+    arabicIfYouSee: 'إذا رأيت: مطلوب تحويل لابلاس المباشر L{f(t)} مع إزاحة أو تكامل أو ضرب/قسمة على t',
+    visualPatternLatex: "e^{at}f(t), \\quad u_a(t)f(t-a), \\quad t^n f(t), \\quad \\frac{f(t)}{t}, \\quad \\int_0^t f(\\tau)\\,d\\tau",
+    instantTestLatex: "\\text{Check if } u_a(t) \\text{ has unshifted } t \\text{ (e.g. } e^t = e^a e^{t-a}, \\; t^2 = ((t-a)+a)^2\\text{)}!",
+    doThisAction: 'DO THIS: (1) Reduce sin²/cos²/products first; (2) For ∫_0^t, divide by s; (3) For t^n, take (-1)^n d^n/ds^n; (4) For ÷t, integrate ∫_s^∞; (5) For u_a(t), align all t to (t-a) and pull out e^{-as}!',
+    arabicDoThis: 'فك التربيع والضرب المثلثي أولاً، للتكامل اقسم على s، للضرب في t اشتق، للقسمة على t كامل من s إلى ∞، ولدالة الخطوة وحد كل t إلى (t-a).',
+    solutionFormulaLatex: "\\mathcal{L}\\{e^{at}f(t)\\}=F(s-a), \\; \\mathcal{L}\\{u_a(t)f(t-a)\\}=e^{-as}F(s), \\; \\mathcal{L}\\left\\{\\int_0^t f(\\tau)d\\tau\\right\\}=\\frac{F(s)}{s}",
+    killerTrapWarning: 'If the integral upper limit is INFINITY ∫_0^∞ e^{-3t} sin²t dt (Final 3 Q3a), do NOT divide by s! Find L{sin²t} and plug in the number s = 3!',
+    sampleQuestionId: 'fin1-q3b-all',
+    sampleEquationLatex: "f(t) = u_7(t)e^t\\cos(t-7) \\quad \\text{and} \\quad f(t) = t^{11}e^{5t} + \\frac{\\cos 4t - \\cos 5t}{t}"
+  },
+  {
+    id: 'dt-10-inv-laplace',
+    stepNumber: 10,
+    orderGroup: 'Laplace & Inverse Laplace (Q3 & Q4a)',
+    ifYouSeeTitle: 'IF YOU SEE: Inverse Laplace L⁻¹{F(s)} with ln(...), tan⁻¹(...), e^{-as}, or Quadratics',
+    arabicIfYouSee: 'إذا رأيت: لابلاس العكسي لـ ln أو tan⁻¹ أو e^{-as} أو مقام تربيعي',
+    visualPatternLatex: "\\ln\\left(\\frac{s+a}{s+b}\\right), \\quad \\tan^{-1}\\left(\\frac{s}{a}\\right), \\quad \\frac{s+9}{s^2+6s+3}e^{-6s}, \\quad \\frac{P(s)}{s(s-a)(s-b)}",
+    instantTestLatex: "\\ln / \\tan^{-1} \\implies f(t) = -\\frac{1}{t}\\mathcal{L}^{-1}\\{F'(s)\\} \\quad | \\quad s^2+2bs+c = (s+b)^2 + (c-b^2)",
+    doThisAction: 'DO THIS: For ln/tan⁻¹, expand log laws first, differentiate w.r.t. s, invert, and divide by (-t). For unfactorable quadratics, complete the square to (s+b)² ± k and rewrite numerator s as (s+b) - b!',
+    arabicDoThis: 'للوغاريتم و tan⁻¹ اشتق بالنسبة لـ s ثم اقسم على (-t). وللمقام التربيعي أكمل المربع إلى (s+b)² واكتب البسط بدلالة (s+b).',
+    solutionFormulaLatex: "f(t) = -\\frac{1}{t}\\mathcal{L}^{-1}\\{F'(s)\\}, \\qquad \\mathcal{L}^{-1}\\{e^{-as}G(s)\\} = u_a(t)g(t-a)",
+    killerTrapWarning: 'When e^{-as} multiplies a fraction, invert the fraction completely first to get g(t), then at the very end replace EVERY t with (t - a) and multiply by u_a(t)!',
+    sampleQuestionId: 's24f-ilap-2f',
+    sampleEquationLatex: "F(s) = \\frac{(s+9)e^{-6s}}{s^2+6s+3} \\quad \\text{and} \\quad F(s) = \\ln\\left(\\frac{s+3}{s+1}\\right) + \\tan^{-1}\\left(\\frac{s}{2}\\right)"
+  },
+  {
+    id: 'dt-11-fourier',
+    stepNumber: 11,
+    orderGroup: 'Fourier Series & Legendre (Q4b & Q5)',
+    ifYouSeeTitle: 'IF YOU SEE: "Represent f(x) as Fourier Series / Cosine Series / Sine Series"',
+    arabicIfYouSee: 'إذا رأيت: مثل الدالة كمتسلسلة فورييه أو متسلسلة جيب التمام أو الجيب',
+    visualPatternLatex: "f(x) \\text{ on } [-T, T] \\quad \\text{vs.} \\quad f(x) \\text{ on } [0, T] \\text{ (Cosine or Sine Series)}",
+    instantTestLatex: "\\text{On } [-T,T]: \\text{ test } f(-x) = \\pm f(x). \\quad \\text{On } [0,T]: \\text{ Cosine} \\implies b_n=0; \\; \\text{Sine} \\implies a_0=a_n=0!",
+    doThisAction: 'DO THIS: Identify T first! Use symmetry or the half-range name ("Cosine" vs "Sine") to zero out half the coefficients immediately, then use Tabular IBP with sin(nπ)=0 and cos(nπ)=(-1)ⁿ!',
+    arabicDoThis: 'حدد قيمة نصف الدورة T أولاً! استخدم التماثل أو اسم المتسلسلة (Cosine أو Sine) لتصفير نصف المعاملات فوراً، ثم كامل بالجدول.',
+    solutionFormulaLatex: "a_0 = \\frac{2}{T}\\int_0^T f(x)dx, \\quad a_n = \\frac{2}{T}\\int_0^T f(x)\\cos\\frac{n\\pi x}{T}dx, \\quad b_n = \\frac{2}{T}\\int_0^T f(x)\\sin\\frac{n\\pi x}{T}dx",
+    killerTrapWarning: 'If asked for the Fourier Sine Series of f(x) = x² or x⁴ on [0, π], do NOT say "even so b_n = 0"! Sine Series ALWAYS means a_0 = a_n = 0!',
+    sampleQuestionId: 's24f-four-4d',
+    sampleEquationLatex: "f(x) = 5x^2, \\quad 0 \\le x \\le 2 \\quad \\text{(Fourier Sine Series)}"
+  },
+  {
+    id: 'dt-12-legendre',
+    stepNumber: 12,
+    orderGroup: 'Fourier Series & Legendre (Q4b & Q5)',
+    ifYouSeeTitle: 'IF YOU SEE: Legendre Recurrence Relation & Definite Integrals ∫_{-1}¹ P_n(x) dx',
+    arabicIfYouSee: 'إذا رأيت: علاقة تكرار ليجندر وتكاملات محددة من -1 إلى 1 لـ P_n(x)',
+    visualPatternLatex: "xP_n(x) = \\frac{n+1}{2n+1}P_{n+1}(x) + \\frac{n}{2n+1}P_{n-1}(x), \\qquad \\int_{-1}^1 xP_n(x)P_{n+1}(x)\\,dx",
+    instantTestLatex: "\\int_{-1}^1 P_m(x)P_n(x)\\,dx = \\begin{cases} 0, & m \\neq n \\\\ \\frac{2}{2n+1}, & m = n \\end{cases}",
+    doThisAction: 'DO THIS: Never expand P_n(x)! Use orthogonality 2/(2n+1) for squared P_n²(x). For ∫_{-1}¹ x P_n(x) P_{n+1}(x) dx, substitute x P_n(x) from the recurrence relation so only the P_{n+1}²(x) integral survives!',
+    arabicDoThis: 'لا تفك كثيرات حدود ليجندر أبداً! استخدم قانون التعامد 2/(2n+1)، وفي تكامل x P_n P_{n+1} عوض من علاقة التكرار.',
+    solutionFormulaLatex: "\\int_{-1}^1 P_n^2(x)\\,dx = \\frac{2}{2n+1}, \\qquad \\int_{-1}^1 xP_n(x)P_{n+1}(x)\\,dx = \\frac{n+1}{2n+1}\\cdot\\frac{2}{2n+3}",
+    killerTrapWarning: 'Remember P_0(x) = 1 and P_1(x) = x! So ∫_{-1}¹ x P_1(x) dx = ∫_{-1}¹ P_1²(x) dx = 2/3, and ∫_{-1}¹ P_0(x) P_3²(x) dx = 2/7!',
+    sampleQuestionId: 'fin1-q5-all',
+    sampleEquationLatex: "\\int_{-1}^1 P_3^2(x)\\,dx = \\frac{2}{7} \\quad \\text{and} \\quad \\int_{-1}^1 xP_7(x)P_8(x)\\,dx = \\frac{16}{255}"
   }
 ];

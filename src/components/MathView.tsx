@@ -32,7 +32,11 @@ export const MathView: React.FC<MathViewProps> = ({
 
   return (
     <span
-      className={`inline-block select-text ${isDisplayMode ? 'w-full text-center my-1.5 overflow-x-auto overflow-y-hidden py-1' : ''} ${className}`}
+      className={`select-text max-w-full ${
+        isDisplayMode
+          ? 'block w-full text-center my-1 overflow-x-auto overflow-y-hidden py-1'
+          : 'inline-block align-middle overflow-x-auto overflow-y-hidden max-w-full'
+      } ${className}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -72,7 +76,7 @@ export const FormattedText: React.FC<FormattedTextProps> = ({ text, className = 
   }, [text]);
 
   return (
-    <span className={className}>
+    <span className={`break-words ${className}`}>
       {parts.map((p, idx) => {
         if (p.type === 'block-math') {
           return <MathView key={idx} math={p.content} block />;

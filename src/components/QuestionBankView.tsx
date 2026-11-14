@@ -123,6 +123,14 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   const sources = useMemo(() => {
     return [
       'All',
+      'Official Final Revision Sheet Fall 2024–2025',
+      'Final Written Exam 1 (Fall 2017–2018)',
+      'Final Written Exam 2 (Fall 2019–2020 3hr)',
+      'Final Written Exam 3 (Fall 2016–2017)',
+      'Final Written Exam 4 (Summer 2017–2018)',
+      'Final Written Exam 5/6 (Fall 2019–2020 2hr)',
+      'Laplace Master Summary Notes (Laplace.pdf)',
+      'Math 2 Solved Bank & Appendices (May 2023)',
       'Midterm Written Exam Fall 2025–2026',
       'Midterm Written Exam Fall 2024–2025',
       'Midterm Written Exam Fall 2023–2024',
@@ -143,6 +151,9 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
       'Undetermined Coeffs & Variation',
       'Reduction of Order',
       'Circuits & Mechanics',
+      'Laplace & Inverse Laplace',
+      'Fourier & Legendre',
+      'Calculus & Integration Rescue',
     ];
   }, []);
 
@@ -174,6 +185,9 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
         if (selectedMethod === 'Undetermined Coeffs & Variation' && !['Non-Homogeneous: Undetermined Coefficients', 'Variation of Parameters (Wronskian)'].includes(q.category)) return false;
         if (selectedMethod === 'Reduction of Order' && q.category !== 'Reduction of Order Method') return false;
         if (selectedMethod === 'Circuits & Mechanics' && q.subCategory !== 'Physical & Circuit Applications') return false;
+        if (selectedMethod === 'Laplace & Inverse Laplace' && q.subCategory !== 'Laplace & Inverse Laplace') return false;
+        if (selectedMethod === 'Fourier & Legendre' && q.subCategory !== 'Fourier Series & Legendre') return false;
+        if (selectedMethod === 'Calculus & Integration Rescue' && q.subCategory !== 'Calculus & Integration Rescue') return false;
       }
       if (searchQuery.trim()) {
         const s = searchQuery.toLowerCase();
@@ -183,7 +197,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
           q.methodTag.toLowerCase().includes(s) ||
           q.arabicMethodTag.toLowerCase().includes(s) ||
           q.examinerTrap.toLowerCase().includes(s) ||
-          q.secretShortcut.toLowerCase().includes(s)
+          q.secretShortcut.toLowerCase().includes(s) ||
+          q.sourceExam.toLowerCase().includes(s)
         );
       }
       return true;
@@ -222,15 +237,15 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 min-w-0">
       {/* Top Summary & Playlist Switcher */}
-      <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-xs text-teal-400 font-mono">
+      <div className="p-4 sm:p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5 min-w-0">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 min-w-0">
+          <div className="space-y-1.5 min-w-0">
+            <div className="flex items-center gap-2 text-xs text-teal-400 font-mono flex-wrap">
               <span>COMPLETE VERIFIED QUESTION BANK</span>
               <span>·</span>
-              <span className="tabular-nums">{MASTER_EXAM_QUESTIONS.length} ANALYZED QUESTIONS</span>
+              <span className="tabular-nums">{MASTER_EXAM_QUESTIONS.length} CARDS (180+ SOLVED PROBLEMS)</span>
               <span>·</span>
               <span className="tabular-nums">{masteredCount}/{MASTER_EXAM_QUESTIONS.length} MASTERED</span>
               {weakSpotCount > 0 && (
@@ -242,11 +257,11 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                 </>
               )}
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
-              Every Exam & Revision Sheet Question — Solved Step-by-Step
+            <h2 className="text-lg sm:text-2xl font-bold text-slate-100 tracking-tight">
+              Every Midterm, Final Exam, Revision Sheet & Note Question — Solved Step-by-Step
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 max-w-3xl leading-relaxed">
-              Switch between all 58 questions, the curated <strong>12 Golden Exam Questions (45-Min Emergency Playlist)</strong> covering 100% of exam archetypes without repetition, or your personal <strong>Weak-Spot Mistake Queue</strong>.
+              Every single question from all 5 Midterm Exams, all 5 Final Written Exams (Final 1–6), the Official Midterm & Final Revision Sheets, Laplace/Fourier master notes, and the Math 2 Calculus & Conics Solved Bank — including official corrections to errors in the handwritten student answer keys.
             </p>
           </div>
 
@@ -257,13 +272,13 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                 setSelfTestMode(!selfTestMode);
                 setRevealedSteps({});
               }}
-              className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 border transition-colors cursor-pointer whitespace-nowrap ${
+              className={`w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 border transition-colors cursor-pointer whitespace-nowrap ${
                 selfTestMode
                   ? 'bg-amber-500/15 text-amber-300 border-amber-500/40'
                   : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
               }`}
             >
-              {selfTestMode ? <EyeOff className="w-4 h-4 text-amber-400" /> : <Eye className="w-4 h-4 text-teal-400" />}
+              {selfTestMode ? <EyeOff className="w-4 h-4 text-amber-400 shrink-0" /> : <Eye className="w-4 h-4 text-teal-400 shrink-0" />}
               <span>{selfTestMode ? 'Active Recall: ON (Steps Hidden)' : 'Study Mode: All Steps Visible'}</span>
             </button>
           </div>
@@ -273,18 +288,18 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
           <button
             onClick={() => setPresetMode('All')}
-            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between ${
+            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between gap-2 min-w-0 ${
               presetMode === 'All'
                 ? 'bg-teal-500/15 border-teal-500/50 text-slate-100'
                 : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
-            <div>
-              <div className="text-xs font-mono font-bold text-teal-400">COMPLETE ARCHIVE</div>
-              <div className="text-sm font-bold text-slate-100">All 58 Exam & Sheet Questions</div>
+            <div className="min-w-0">
+              <div className="text-xs font-mono font-bold text-teal-400 truncate">COMPLETE ARCHIVE (MIDTERM + FINAL)</div>
+              <div className="text-sm font-bold text-slate-100 truncate">All {MASTER_EXAM_QUESTIONS.length} Cards (180+ Exam Problems)</div>
             </div>
-            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300">
-              58 Qs
+            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 shrink-0 whitespace-nowrap">
+              {MASTER_EXAM_QUESTIONS.length} Cards
             </span>
           </button>
 
@@ -295,21 +310,21 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               setSelectedMethod('All');
               setSelectedDifficulty('All');
             }}
-            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between ${
+            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between gap-2 min-w-0 ${
               presetMode === 'Golden12'
                 ? 'bg-amber-500/15 border-amber-500/50 text-slate-100'
                 : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
-            <div>
+            <div className="min-w-0">
               <div className="text-xs font-mono font-bold text-amber-400 flex items-center gap-1">
-                <Flame className="w-3.5 h-3.5" />
-                <span>45-MIN EMERGENCY PLAYLIST</span>
+                <Flame className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">45-MIN EMERGENCY PLAYLIST</span>
               </div>
-              <div className="text-sm font-bold text-slate-100">The 12 Golden Exam Questions</div>
+              <div className="text-sm font-bold text-slate-100 truncate">The {GOLDEN_12_QUESTION_IDS.length} Golden Exam Archetypes</div>
             </div>
-            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300">
-              12 Qs
+            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 shrink-0 whitespace-nowrap">
+              {GOLDEN_12_QUESTION_IDS.length} Qs
             </span>
           </button>
 
@@ -320,67 +335,101 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               setSelectedMethod('All');
               setSelectedDifficulty('All');
             }}
-            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between ${
+            className={`p-3.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center justify-between gap-2 min-w-0 ${
               presetMode === 'WeakSpots'
                 ? 'bg-rose-500/15 border-rose-500/50 text-slate-100'
                 : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
-            <div>
+            <div className="min-w-0">
               <div className="text-xs font-mono font-bold text-rose-400 flex items-center gap-1">
-                <Bookmark className="w-3.5 h-3.5" />
-                <span>SPACED REPETITION QUEUE</span>
+                <Bookmark className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">SPACED REPETITION QUEUE</span>
               </div>
-              <div className="text-sm font-bold text-slate-100">My Mistakes & Weak Spots</div>
+              <div className="text-sm font-bold text-slate-100 truncate">My Mistakes & Weak Spots</div>
             </div>
-            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300">
+            <span className="text-xs font-mono tabular-nums font-bold px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 shrink-0 whitespace-nowrap">
               {weakSpotCount} Qs
             </span>
           </button>
         </div>
 
-        {/* Original Attached PDF Papers Bar */}
-        <div className="pt-3 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-400 mr-1 font-medium">Official PDF Papers:</span>
-          {[
-            { label: 'Fall 2025–2026 Model Answer', url: '/assets/aistudio/Mid_Term2_examMTHn103fall2026_Model_Answer__686bca1c.pdf' },
-            { label: 'Fall 2024–2025 Model Answer', url: '/assets/aistudio/model_answer_Mid_Term2_examMTHn103fall2025_4c083398.pdf' },
-            { label: 'Fall 2023–2024 Model Answer', url: '/assets/aistudio/model_answer_Mid_Term2_examMTHn103fall2024__1__6667c7c1.pdf' },
-            { label: 'Fall 2021–2022 Exam', url: '/assets/aistudio/Mid_Term_exam__Fall2022__1__9deffc90.pdf' },
-            { label: 'Fall 2020–2021 Exam', url: '/assets/aistudio/Mid_Term_exam_Fall2021__1__143d9fd2.pdf' },
-            { label: 'Fall 2027 Revision Sheet (31 Qs)', url: '/assets/aistudio/Mathematics3fall2027__1__fc4471ef.pdf' },
-          ].map((pdf) => (
-            <a
-              key={pdf.label}
-              href={pdf.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-teal-300 border border-slate-800 text-xs flex items-center gap-1.5 transition-colors whitespace-nowrap"
-            >
-              <FileText className="w-3.5 h-3.5 text-teal-400 shrink-0" />
-              <span>{pdf.label}</span>
-              <ExternalLink className="w-3 h-3 text-slate-500 shrink-0" />
-            </a>
-          ))}
+        {/* All 22 Attached Official PDF Papers & Reference Sheets Bar */}
+        <div className="pt-3 border-t border-slate-800/80 space-y-2 min-w-0">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 sm:flex-wrap">
+            <span className="text-xs text-teal-400 mr-1 font-mono font-bold shrink-0 whitespace-nowrap">Final Exams & Sheets:</span>
+            {[
+              { label: 'Final Revision Sheet (Fall 2024)', url: '/assets/aistudio/Mathematics3fall2024final_4e14172d.pdf' },
+              { label: 'Final 1 (Fall 17–18)', url: '/assets/aistudio/Final_1___1__7cf7076f.pdf' },
+              { label: 'Final 2 (Fall 19–20 3hr)', url: '/assets/aistudio/Final_2___1__f9b01d9c.pdf' },
+              { label: 'Ans.Final 2', url: '/assets/aistudio/Ans.Final_2___1__300b5733.pdf' },
+              { label: 'Final 3 (Fall 16–17)', url: '/assets/aistudio/Final_3___1__6c60fddd.pdf' },
+              { label: 'Ans.Final 3', url: '/assets/aistudio/Ans.Final_3___1__8983ebf2.pdf' },
+              { label: 'Final 4 (Summer 17–18)', url: '/assets/aistudio/Final_4___1__ea25ee9a.pdf' },
+              { label: 'Ans.Final 4', url: '/assets/aistudio/Ans.Final_4___1__f632b559.pdf' },
+              { label: 'Final 5/6 (Fall 19–20 2hr)', url: '/assets/aistudio/Final_5___1__2a029b34.pdf' },
+              { label: 'Ans.Final 6', url: '/assets/aistudio/Ans.Final_6___1__8f7af933.pdf' },
+              { label: 'Laplace Notes (10p)', url: '/assets/aistudio/Laplace_3216e865.pdf' },
+              { label: 'Fourier Notes (2p)', url: '/assets/aistudio/Fourier_b45db703.pdf' },
+              { label: 'Math Appendices', url: '/assets/aistudio/Appendencies_Mathematics__1__1ee12d2a.pdf' },
+              { label: 'Math 2 Solved Bank (49p)', url: '/assets/aistudio/MAY_2023_MATH2__FINAL___SOLVED_PROBLEMS_bd406b83.pdf' },
+            ].map((pdf) => (
+              <a
+                key={pdf.label}
+                href={pdf.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-teal-300 border border-slate-800 text-[11px] flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
+              >
+                <FileText className="w-3 h-3 text-teal-400 shrink-0" />
+                <span>{pdf.label}</span>
+                <ExternalLink className="w-2.5 h-2.5 text-slate-500 shrink-0" />
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 sm:flex-wrap">
+            <span className="text-xs text-amber-400 mr-1 font-mono font-bold shrink-0 whitespace-nowrap">Midterm Exams & Sheets:</span>
+            {[
+              { label: 'Fall 2025–2026 Model Answer', url: '/assets/aistudio/Mid_Term2_examMTHn103fall2026_Model_Answer__686bca1c.pdf' },
+              { label: 'Fall 2024–2025 Model Answer', url: '/assets/aistudio/model_answer_Mid_Term2_examMTHn103fall2025_4c083398.pdf' },
+              { label: 'Fall 2023–2024 Model Answer', url: '/assets/aistudio/model_answer_Mid_Term2_examMTHn103fall2024__1__6667c7c1.pdf' },
+              { label: 'Fall 2021–2022 Exam', url: '/assets/aistudio/Mid_Term_exam__Fall2022__1__9deffc90.pdf' },
+              { label: 'Fall 2020–2021 Exam', url: '/assets/aistudio/Mid_Term_exam_Fall2021__1__143d9fd2.pdf' },
+              { label: 'Midterm Revision Sheet (31 Qs)', url: '/assets/aistudio/Mathematics3fall2027__1__fc4471ef.pdf' },
+            ].map((pdf) => (
+              <a
+                key={pdf.label}
+                href={pdf.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-2.5 py-1 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-amber-300 border border-slate-800 text-[11px] flex items-center gap-1 transition-colors whitespace-nowrap shrink-0"
+              >
+                <FileText className="w-3 h-3 text-amber-400 shrink-0" />
+                <span>{pdf.label}</span>
+                <ExternalLink className="w-2.5 h-2.5 text-slate-500 shrink-0" />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Golden 12 Callout Banner when active */}
+      {/* Golden Archetypes Callout Banner when active */}
       {presetMode === 'Golden12' && (
         <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-0.5">
             <div className="text-xs font-mono font-bold text-amber-400">
-              THE 45-MINUTE EMERGENCY CRAM PLAYLIST (12 GOLDEN ARCHETYPES)
+              THE 45-MINUTE EMERGENCY CRAM PLAYLIST ({GOLDEN_12_QUESTION_IDS.length} GOLDEN MIDTERM & FINAL ARCHETYPES)
             </div>
             <p className="text-xs text-slate-300">
-              If you only have 45 minutes before the exam, master these 12 hand-picked questions. Each one represents a distinct trick from Prof. Ashraf Taha & Dr. Amira Salem's exams with zero redundancy.
+              If you only have 45 minutes before the exam, master these {GOLDEN_12_QUESTION_IDS.length} hand-picked questions. Each one represents a distinct trick across 1st-Order ODEs, Higher-Order ODEs, Circuits, Laplace IVPs, Fourier Series, and Legendre Polynomials with zero redundancy.
             </p>
           </div>
           <button
             onClick={expandAll}
             className="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-bold shrink-0 cursor-pointer whitespace-nowrap"
           >
-            Expand All 12 Solutions
+            Expand All {GOLDEN_12_QUESTION_IDS.length} Solutions
           </button>
         </div>
       )}
@@ -395,7 +444,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search equation, trick, method (e.g. Bernoulli, sec y, m^3, RLC)..."
+              placeholder="Search equation, trick, method (e.g. Laplace, Fourier, Legendre, Bernoulli, RLC)..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500"
             />
           </div>
@@ -409,7 +458,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
             >
               {sources.map((src) => (
                 <option key={src} value={src}>
-                  {src === 'All' ? 'All Exams & Revision Sheet' : src}
+                  {src === 'All' ? 'All 15 Exams, Sheets & Notes' : src}
                 </option>
               ))}
             </select>
@@ -452,7 +501,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
           </div>
 
           <div className="flex items-center gap-2 text-xs text-slate-400 shrink-0">
-            <span className="tabular-nums font-mono">Showing {filteredQuestions.length} questions</span>
+            <span className="tabular-nums font-mono">Showing {filteredQuestions.length} cards</span>
             <span>·</span>
             <button onClick={expandAll} className="hover:text-teal-400 underline cursor-pointer">
               Expand All
@@ -476,7 +525,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
           </h3>
           <p className="text-xs text-slate-400 max-w-md mx-auto">
             {presetMode === 'WeakSpots'
-              ? 'Any question you miss in the Diagnostic Drill or flag with "Review Again" will automatically appear here for focused cramming.'
+              ? 'Any question you miss in the Diagnostic Drill or flag with "Flag Weak Spot" will automatically appear here for focused cramming.'
               : 'Try resetting your search query or switching back to All Questions.'}
           </p>
           <button
@@ -489,13 +538,13 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
             }}
             className="px-4 py-2 rounded-xl bg-teal-500 text-slate-950 text-xs font-bold cursor-pointer"
           >
-            Show All 58 Questions
+            Show All {MASTER_EXAM_QUESTIONS.length} Cards
           </button>
         </div>
       )}
 
       {/* Questions List */}
-      <div className="space-y-4">
+      <div className="space-y-4 min-w-0">
         {filteredQuestions.map((q, index) => {
           const isExpanded = !!expandedIds[q.id];
           const isMastered = !!masteredIds[q.id];
@@ -506,7 +555,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
           return (
             <div
               key={q.id}
-              className={`rounded-2xl border transition-colors overflow-hidden ${
+              className={`rounded-2xl border transition-colors overflow-hidden min-w-0 ${
                 isWeakSpot
                   ? 'bg-slate-900/90 border-rose-500/40'
                   : isMastered
@@ -517,7 +566,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
               {/* Question Header */}
               <div
                 onClick={() => toggleExpand(q.id)}
-                className="p-5 cursor-pointer flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                className="p-4 sm:p-5 cursor-pointer flex flex-col lg:flex-row lg:items-center justify-between gap-4 min-w-0"
               >
                 <div className="space-y-2.5 flex-1 min-w-0">
                   {/* Unboxed Metadata Line */}
@@ -557,109 +606,111 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                   )}
 
                   {/* Mathematical Formula */}
-                  <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800/90 text-teal-300 text-sm sm:text-base overflow-x-auto no-scrollbar">
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-slate-950 border border-slate-800/90 text-teal-300 text-sm sm:text-base overflow-x-auto no-scrollbar max-w-full">
                     <MathView math={q.problemLatex} block />
                   </div>
 
                   {/* Arabic Method Subtitle */}
-                  <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 text-xs text-slate-400">
                     <span>{q.arabicMethodTag}</span>
                     <span className="text-slate-500 font-mono text-[11px]">{q.sourceExam}</span>
                   </div>
                 </div>
 
                 {/* Right Action Controls */}
-                <div className="flex items-center gap-2 shrink-0 self-end lg:self-center flex-wrap">
-                  <button
-                    onClick={(e) => toggleWeakSpot(q.id, e)}
-                    className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap ${
-                      isWeakSpot
-                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-rose-300'
-                    }`}
-                    title="Add or remove from your Weak-Spot Mistake Queue"
-                  >
-                    <Bookmark className="w-3.5 h-3.5" />
-                    <span>{isWeakSpot ? 'In Mistake Queue' : 'Flag Weak Spot'}</span>
-                  </button>
+                <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 w-full lg:w-auto pt-3 lg:pt-0 border-t border-slate-800/60 lg:border-0 flex-wrap">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                    <button
+                      onClick={(e) => toggleWeakSpot(q.id, e)}
+                      className={`px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap ${
+                        isWeakSpot
+                          ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-rose-300'
+                      }`}
+                      title="Add or remove from your Weak-Spot Mistake Queue"
+                    >
+                      <Bookmark className="w-3.5 h-3.5 shrink-0" />
+                      <span>{isWeakSpot ? 'In Queue' : 'Weak Spot'}</span>
+                    </button>
 
-                  <button
-                    onClick={(e) => toggleMastered(q.id, e)}
-                    className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap ${
-                      isMastered
-                        ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40'
-                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>{isMastered ? 'Mastered' : 'Mastered'}</span>
-                  </button>
+                    <button
+                      onClick={(e) => toggleMastered(q.id, e)}
+                      className={`px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors cursor-pointer whitespace-nowrap ${
+                        isMastered
+                          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40'
+                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                      <span>Mastered</span>
+                    </button>
 
-                  <button
-                    onClick={(e) => handleCopyLatex(q, e)}
-                    className="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition-colors cursor-pointer"
-                    title="Copy problem & solution"
-                  >
-                    {copiedId === q.id ? (
-                      <Check className="w-4 h-4 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
+                    <button
+                      onClick={(e) => handleCopyLatex(q, e)}
+                      className="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition-colors cursor-pointer"
+                      title="Copy problem & solution"
+                    >
+                      {copiedId === q.id ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
 
-                  <button className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
+                  <button className="px-3 sm:px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
                     <span>{isExpanded ? 'Hide Solution' : 'Step-by-Step'}</span>
-                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    {isExpanded ? <ChevronUp className="w-4 h-4 shrink-0" /> : <ChevronDown className="w-4 h-4 shrink-0" />}
                   </button>
                 </div>
               </div>
 
               {/* Expanded Analytical Breakdown & Step-by-Step Solution */}
               {isExpanded && (
-                <div className="p-5 sm:p-6 bg-slate-950/90 border-t border-slate-800/90 space-y-5">
+                <div className="p-4 sm:p-6 bg-slate-950/90 border-t border-slate-800/90 space-y-5 min-w-0">
                   {/* 3-Column Intelligence Strip */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-w-0">
+                    <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5 min-w-0">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-teal-400">
                         <Eye className="w-3.5 h-3.5 shrink-0" />
                         <span>1. Visual Recognition Trigger (كيف تكتشفها فوراً)</span>
                       </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">{q.visualRecognitionTrigger}</p>
-                      <p className="text-xs text-slate-400 leading-relaxed pt-1 border-t border-slate-800/60">
+                      <p className="text-xs text-slate-300 leading-relaxed break-words">{q.visualRecognitionTrigger}</p>
+                      <p className="text-xs text-slate-400 leading-relaxed pt-1 border-t border-slate-800/60 break-words">
                         {q.arabicVisualTrigger}
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/25 space-y-1.5">
+                    <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/25 space-y-1.5 min-w-0">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400">
                         <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                         <span>2. Examiner Trap to Avoid (فخ الامتحان)</span>
                       </div>
-                      <p className="text-xs text-amber-100/90 leading-relaxed">{q.examinerTrap}</p>
-                      <p className="text-xs text-amber-200/75 leading-relaxed pt-1 border-t border-amber-500/15">
+                      <p className="text-xs text-amber-100/90 leading-relaxed break-words">{q.examinerTrap}</p>
+                      <p className="text-xs text-amber-200/75 leading-relaxed pt-1 border-t border-amber-500/15 break-words">
                         {q.arabicExaminerTrap}
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/25 space-y-1.5">
+                    <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/25 space-y-1.5 min-w-0">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
                         <Lightbulb className="w-3.5 h-3.5 shrink-0" />
                         <span>3. Official Model Answer Shortcut (الحل السريع)</span>
                       </div>
-                      <p className="text-xs text-emerald-100/90 leading-relaxed">{q.secretShortcut}</p>
+                      <p className="text-xs text-emerald-100/90 leading-relaxed break-words">{q.secretShortcut}</p>
                     </div>
                   </div>
 
                   {/* Step-by-Step Solution */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
+                  <div className="space-y-3 min-w-0">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
                       <h4 className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider">
                         Step-by-Step Derivation ({q.steps.length} Steps)
                       </h4>
                       {selfTestMode && currentRevealedCount <= q.steps.length && (
                         <button
                           onClick={() => revealNextStep(q.id, q.steps.length)}
-                          className="px-3.5 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-bold transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-bold transition-colors cursor-pointer whitespace-nowrap"
                         >
                           {currentRevealedCount === 0
                             ? 'Reveal Step 1'
@@ -670,7 +721,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                       )}
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-3 min-w-0">
                       {q.steps.map((step, sIdx) => {
                         const isStepVisible = !selfTestMode || sIdx < currentRevealedCount;
 
@@ -679,12 +730,12 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                             <div
                               key={step.stepNumber}
                               onClick={() => revealNextStep(q.id, q.steps.length)}
-                              className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/70 flex items-center justify-between cursor-pointer hover:border-teal-500/40 transition-colors"
+                              className="p-4 rounded-xl bg-slate-900/40 border border-slate-800/70 flex items-center justify-between gap-2 cursor-pointer hover:border-teal-500/40 transition-colors"
                             >
                               <span className="text-xs font-mono text-slate-500">
                                 Step {step.stepNumber}: {step.title} (Hidden for Active Recall)
                               </span>
-                              <span className="text-xs text-teal-400 font-semibold">Click to reveal step →</span>
+                              <span className="text-xs text-teal-400 font-semibold whitespace-nowrap">Click to reveal step →</span>
                             </div>
                           );
                         }
@@ -692,14 +743,14 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                         return (
                           <div
                             key={step.stepNumber}
-                            className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2.5"
+                            className="p-3.5 sm:p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2.5 min-w-0"
                           >
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                              <div className="flex items-center gap-2">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 min-w-0">
+                              <div className="flex items-center gap-2 min-w-0">
                                 <span className="w-6 h-6 rounded-lg bg-teal-500/15 text-teal-300 border border-teal-500/30 flex items-center justify-center text-xs font-mono font-bold tabular-nums shrink-0">
                                   {step.stepNumber}
                                 </span>
-                                <h5 className="text-xs sm:text-sm font-bold text-slate-100">
+                                <h5 className="text-xs sm:text-sm font-bold text-slate-100 break-words">
                                   {step.title}
                                 </h5>
                               </div>
@@ -708,13 +759,13 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                               </span>
                             </div>
 
-                            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/90 text-teal-300 text-xs sm:text-sm overflow-x-auto no-scrollbar">
+                            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/90 text-teal-300 text-xs sm:text-sm overflow-x-auto no-scrollbar max-w-full">
                               <MathView math={step.formula} block />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-300 pt-0.5">
-                              <p className="leading-relaxed">{step.explanation}</p>
-                              <p className="text-slate-400 leading-relaxed md:text-right" dir="rtl">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-300 pt-0.5 min-w-0">
+                              <p className="leading-relaxed break-words">{step.explanation}</p>
+                              <p className="text-slate-400 leading-relaxed md:text-right break-words" dir="rtl">
                                 {step.arabicExplanation}
                               </p>
                             </div>
@@ -726,8 +777,8 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
 
                   {/* Final Boxed Answer */}
                   {(!selfTestMode || currentRevealedCount > q.steps.length) && (
-                    <div className="p-4 rounded-xl bg-teal-950/30 border border-teal-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="flex items-center gap-2">
+                    <div className="p-4 rounded-xl bg-teal-950/30 border border-teal-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">
+                      <div className="flex items-center gap-2 shrink-0">
                         <Award className="w-5 h-5 text-teal-400 shrink-0" />
                         <div>
                           <span className="text-xs font-bold text-teal-300 block">
@@ -738,7 +789,7 @@ export const QuestionBankView: React.FC<QuestionBankViewProps> = ({
                           </span>
                         </div>
                       </div>
-                      <div className="px-4 py-2.5 rounded-xl bg-slate-950 border border-teal-500/40 text-teal-200 text-sm sm:text-base font-bold overflow-x-auto no-scrollbar">
+                      <div className="w-full sm:w-auto max-w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-teal-500/40 text-teal-200 text-sm sm:text-base font-bold overflow-x-auto no-scrollbar">
                         <MathView math={q.finalAnswerLatex} inline />
                       </div>
                     </div>
